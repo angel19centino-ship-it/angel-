@@ -787,6 +787,11 @@ const material = new THREE.ShaderMaterial({
       vec2 q = vec2(length(p.xz) - t.x, p.y);
       return length(q) - t.y;
     }
+    float sdEllipsoid(vec3 p, vec3 r){
+      float k0 = length(p / r);
+      float k1 = length(p / (r * r));
+      return k0 * (k0 - 1.0) / k1;
+    }
     mat2 rot(float a){ float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
 
     /* melt apart mid-page, reform at the end */
@@ -799,7 +804,7 @@ const material = new THREE.ShaderMaterial({
       float sp = 1.0 + spreadCurve(uScroll) * 1.45;
       float sc = mix(0.25, 1.0, uIntro);
 
-      float d = sdSphere(p - vec3(0.0, 0.04*sin(t*0.9), 0.0), 0.60*sc);
+      float d = sdSphere(p - vec3(0.0, 0.04*sin(t*0.9), 0.0), 0.56*sc);
 
       vec3 p1 = p - vec3(0.55, 0.32*cos(t*0.63), 0.22*sin(t*0.51)) * vec3(sp*sin(t*0.71), sp, sp);
       d = smin(d, sdSphere(p1, 0.33*sc), 0.42);
@@ -812,6 +817,25 @@ const material = new THREE.ShaderMaterial({
 
       vec3 p4 = p - vec3(-0.2*sin(t*0.9 + 4.0), 0.15*cos(t*1.2), 0.4*sin(t*0.55)) * sp;
       d = smin(d, sdSphere(p4, 0.17*sc), 0.36);
+
+      /* the wings — mirrored cascades of four long chrome feathers,
+         swept upward, flapping slowly, lifting as the body melts on scroll */
+      {
+        float aspect = uRes.x / uRes.y;
+        float wsc = mix(0.88, 1.0, smoothstep(0.75, 1.25, aspect)) * sc;
+        vec3 q = vec3(abs(p.x), p.y, p.z);
+        float flap = 0.12*sin(t*0.85) + 0.25*spreadCurve(uScroll);
+        q -= vec3(0.28*wsc, 0.12*wsc, 0.0);
+        q.xy *= rot(-0.98 - flap);                /* top feather sweeps steeply up */
+        float w = sdEllipsoid(q - vec3(0.66*wsc, 0.0, 0.0), vec3(0.72, 0.095, 0.038)*wsc);
+        vec3 f = q; f.xy *= rot(0.30);
+        w = smin(w, sdEllipsoid(f - vec3(0.55*wsc, 0.0, 0.0), vec3(0.60, 0.080, 0.035)*wsc), 0.11);
+        f = q; f.xy *= rot(0.58);
+        w = smin(w, sdEllipsoid(f - vec3(0.44*wsc, 0.0, 0.0), vec3(0.48, 0.065, 0.032)*wsc), 0.11);
+        f = q; f.xy *= rot(0.86);
+        w = smin(w, sdEllipsoid(f - vec3(0.33*wsc, 0.0, 0.0), vec3(0.36, 0.052, 0.030)*wsc), 0.11);
+        d = smin(d, w, 0.12);
+      }
 
       /* the halo */
       vec3 hp = p - vec3(0.0, (0.92 + 0.05*sin(t*0.8)) * (1.0 + spreadCurve(uScroll)*0.35), 0.0);
@@ -902,7 +926,7 @@ function resize(){
   uniforms.uRes.value.set(w * dpr, h * dpr);
   /* keep the sculpture off-center behind the headline on wide screens */
   const wide = w / h > 1.1;
-  uniforms.uShift.value.set(wide ? -0.68 : 0.0, wide ? -0.02 : -0.5, wide ? 3.3 : 4.3);
+  uniforms.uShift.value.set(wide ? -0.68 : 0.0, wide ? -0.02 : -0.42, wide ? 3.3 : 5.3);
   if (reduced) renderer.render(scene, camera);
 }
 window.addEventListener('resize', resize);
