@@ -792,6 +792,16 @@ const material = new THREE.ShaderMaterial({
       float k1 = length(p / (r * r));
       return k0 * (k0 - 1.0) / k1;
     }
+    /* rounded cone standing on its base sphere — the gown */
+    float sdRoundCone(vec3 p, float r1, float r2, float h){
+      vec2 q = vec2(length(p.xz), p.y);
+      float b = (r1 - r2) / h;
+      float a = sqrt(1.0 - b*b);
+      float k = dot(q, vec2(-b, a));
+      if (k < 0.0) return length(q) - r1;
+      if (k > a*h) return length(q - vec2(0.0, h)) - r2;
+      return dot(q, vec2(a, b)) - r1;
+    }
     mat2 rot(float a){ float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
 
     /* melt apart mid-page, reform at the end */
@@ -803,29 +813,32 @@ const material = new THREE.ShaderMaterial({
       float t  = uTime * 0.42;
       float sp = 1.0 + spreadCurve(uScroll) * 1.45;
       float sc = mix(0.25, 1.0, uIntro);
+      float sway = 0.035*sin(t*0.6);
 
-      float d = sdSphere(p - vec3(0.0, 0.04*sin(t*0.9), 0.0), 0.56*sc);
+      /* the gown — hem to shoulders */
+      float d = sdRoundCone(p - vec3(sway, -0.58, 0.0), 0.40*sc, 0.15*sc, 0.82*sc);
 
-      vec3 p1 = p - vec3(0.55, 0.32*cos(t*0.63), 0.22*sin(t*0.51)) * vec3(sp*sin(t*0.71), sp, sp);
-      d = smin(d, sdSphere(p1, 0.33*sc), 0.42);
+      /* the head */
+      d = smin(d, sdSphere(p - vec3(sway*1.6, 0.48 + 0.035*sin(t*0.9), 0.0), 0.21*sc), 0.10);
 
-      vec3 p2 = p - vec3(-0.52*cos(t*0.77), -0.30*sin(t*0.69), 0.28*cos(t*0.6)) * sp;
-      d = smin(d, sdSphere(p2, 0.27*sc), 0.42);
+      /* liquid satellites — pulled outward as the page melts */
+      vec3 p1 = p - vec3(0.62*sin(t*0.63), 0.30*cos(t*0.51) - 0.10, 0.30*sin(t*0.44)) * sp;
+      d = smin(d, sdSphere(p1, 0.125*sc), 0.22);
 
-      vec3 p3 = p - vec3(0.24*sin(t*1.05 + 2.1), 0.46*sin(t*0.82 + 1.1), -0.24) * sp;
-      d = smin(d, sdSphere(p3, 0.21*sc), 0.38);
+      vec3 p2 = p - vec3(-0.58*cos(t*0.57), -0.34*sin(t*0.48) - 0.05, 0.26*cos(t*0.52)) * sp;
+      d = smin(d, sdSphere(p2, 0.10*sc), 0.20);
 
-      vec3 p4 = p - vec3(-0.2*sin(t*0.9 + 4.0), 0.15*cos(t*1.2), 0.4*sin(t*0.55)) * sp;
-      d = smin(d, sdSphere(p4, 0.17*sc), 0.36);
+      vec3 p3 = p - vec3(0.30*sin(t*0.8 + 2.1), 0.55*sin(t*0.62 + 1.1), -0.28) * sp;
+      d = smin(d, sdSphere(p3, 0.085*sc), 0.18);
 
       /* the wings — mirrored cascades of four long chrome feathers,
          swept upward, flapping slowly, lifting as the body melts on scroll */
       {
         float aspect = uRes.x / uRes.y;
         float wsc = mix(0.88, 1.0, smoothstep(0.75, 1.25, aspect)) * sc;
-        vec3 q = vec3(abs(p.x), p.y, p.z);
+        vec3 q = vec3(abs(p.x - sway), p.y, p.z);
         float flap = 0.12*sin(t*0.85) + 0.25*spreadCurve(uScroll);
-        q -= vec3(0.28*wsc, 0.12*wsc, 0.0);
+        q -= vec3(0.14*wsc, 0.16*wsc, 0.0);
         q.xy *= rot(-0.98 - flap);                /* top feather sweeps steeply up */
         float w = sdEllipsoid(q - vec3(0.66*wsc, 0.0, 0.0), vec3(0.72, 0.095, 0.038)*wsc);
         vec3 f = q; f.xy *= rot(0.30);
@@ -837,11 +850,11 @@ const material = new THREE.ShaderMaterial({
         d = smin(d, w, 0.12);
       }
 
-      /* the halo */
-      vec3 hp = p - vec3(0.0, (0.92 + 0.05*sin(t*0.8)) * (1.0 + spreadCurve(uScroll)*0.35), 0.0);
+      /* the halo — hovering over the head */
+      vec3 hp = p - vec3(sway*1.6, (0.88 + 0.05*sin(t*0.8)) * (1.0 + spreadCurve(uScroll)*0.35), 0.0);
       hp.xz *= rot(t*0.3);
-      hp.xy *= rot(0.28 + 0.1*sin(t*0.5));
-      d = smin(d, sdTorus(hp, vec2(0.52*sc, 0.055)), 0.16);
+      hp.xy *= rot(0.20 + 0.08*sin(t*0.5));
+      d = smin(d, sdTorus(hp, vec2(0.30*sc, 0.045)), 0.12);
 
       return d;
     }
