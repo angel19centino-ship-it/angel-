@@ -1,556 +1,537 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Supremacy Car Care — Detailing in Paso Robles · Quote in 60 Seconds</title>
-<meta name="description" content="Hand wash, full detailing, paint correction & protection in Paso Robles. 5.0★ on Yelp. Open daily 7–7. Get a quote in 60 seconds or call (805) 712-2778.">
-<meta name="theme-color" content="#0b0b0d">
-<meta property="og:title" content="Supremacy Car Care — Paso Robles">
-<meta property="og:description" content="Showroom clean. Every single time. Quote in 60 seconds.">
-
-<!-- ============================================================
-     CUSTOMIZE ME
-     . GHL webhook ....... set GHL_WEBHOOK_URL in the script at the bottom
-     . Before/after ...... two "SWAP" comments in the slider section:
-                           replace each inline SVG with img tags for your
-                           real before.jpg / after.jpg photos
-     . Reviews ........... two dashed placeholder cards, paste REAL quotes
-     . Phone/address ..... search for 805 and Park St
-     ============================================================ -->
-
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 9l4 4 5-6 5 6 4-4v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' fill='%23f5b301'/%3E%3C/svg%3E">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supremacy Car Care — Detailing, Tint & PPF | Paso Robles</title>
+<meta name="description" content="Paso Robles mobile detailing, ceramic tint & paint protection film. 5.0★ on Google. Get a free quote in 60 seconds or call (805) 712-2778.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,500;0,700;1,900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0b0b0d; --panel:#141317; --panel-2:#1a1920;
-  --line:rgba(245,179,1,.14); --line-soft:rgba(255,255,255,.08);
-  --gold:#f5b301; --gold-2:#ffd34d; --red:#e8442e;
-  --ink:#f6f4ef; --dim:#a39e93;
-  --grad-gold:linear-gradient(135deg,#ffd34d 0%,#f5b301 45%,#c98a00 100%);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
-body{
-  background:var(--bg);color:var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  line-height:1.5;-webkit-font-smoothing:antialiased;
-  padding-bottom:76px; /* room for sticky bar */
-}
-@media (min-width:768px){ body{padding-bottom:0} }
-img,svg{display:block;max-width:100%}
-a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer;border:0}
-:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
-.wrap{max-width:1060px;margin-inline:auto;padding-inline:20px}
-section{padding-block:clamp(44px,8vw,84px)}
-h2{font-size:clamp(1.5rem,4.5vw,2.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
-.kicker{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
-.sub{color:var(--dim);max-width:52ch}
+  :root{
+    --black:#0B0B0D;
+    --panel:#141418;
+    --line:#26262C;
+    --yellow:#FFD400;
+    --yellow-deep:#E6B800;
+    --white:#F5F5F2;
+    --muted:#9C9CA4;
+    --maxw:680px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:'Archivo',system-ui,-apple-system,sans-serif;
+    font-weight:500;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:76px;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+  h1,h2,h3{font-weight:900;font-style:italic;letter-spacing:-.01em;line-height:1.05;text-transform:uppercase}
+  a{color:var(--yellow)}
 
-/* reveal (subtle, JS adds .in) */
-.rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
-.rv.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){ .rv{opacity:1;transform:none;transition:none} }
+  /* ========== 1. ANNOUNCEMENT BAR (borrowed pattern) ========== */
+  .announce{
+    background:var(--yellow);color:var(--black);
+    text-align:center;font-size:13px;font-weight:900;font-style:italic;
+    text-transform:uppercase;letter-spacing:.06em;
+    padding:10px 16px;display:block;text-decoration:none;
+  }
+  .announce:active{background:var(--yellow-deep)}
 
-/* ---------- header ---------- */
-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;max-width:1060px;margin-inline:auto}
-.brand{display:flex;align-items:center;gap:10px}
-.crown{width:26px;height:26px;flex:none}
-.wordmark{font-weight:800;letter-spacing:.08em;font-size:15px}
-.wordmark small{display:block;font-size:9px;letter-spacing:.3em;color:var(--gold);font-weight:700}
-.call-mini{
-  display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;
-  border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:700;background:var(--panel);
-}
-.call-mini:active{background:var(--panel-2)}
+  /* thin secondary line under it */
+  .subline{
+    text-align:center;font-size:12px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted);
+    padding:9px 16px;border-bottom:1px solid var(--line);
+  }
+  .subline b{color:var(--yellow)}
 
-/* ---------- hero ---------- */
-.hero{padding-top:clamp(28px,6vw,64px)}
-.hero h1{
-  font-size:clamp(2.1rem,8.5vw,4rem);font-weight:800;line-height:1.04;letter-spacing:-.03em;
-}
-.hero h1 .gold{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero .sub{margin-top:14px;font-size:clamp(.95rem,2.6vw,1.1rem)}
-.cta-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  min-height:52px;padding:14px 24px;border-radius:14px;font-weight:800;font-size:16px;
-  transition:transform .15s ease,filter .2s ease;
-}
-.btn:active{transform:scale(.98)}
-.btn-gold{background:var(--grad-gold);color:#161001;box-shadow:0 6px 24px rgba(245,179,1,.28)}
-.btn-gold:hover{filter:brightness(1.06)}
-.btn-ghost{border:1px solid var(--line);color:var(--ink);background:rgba(245,179,1,.05)}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.chip{
-  display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;
-  background:var(--panel);border:1px solid var(--line-soft);font-size:12.5px;font-weight:600;color:var(--dim);
-}
-.chip b{color:var(--ink)}
-.chip .star{color:var(--gold)}
+  /* ========== 2. UTILITY HEADER: logo + pills (borrowed pattern) ========== */
+  .hdr{
+    position:sticky;top:0;z-index:40;
+    background:rgba(11,11,13,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .hdr-row{
+    max-width:var(--maxw);margin:0 auto;padding:12px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  .logo{
+    font-weight:900;font-style:italic;text-transform:uppercase;
+    font-size:19px;line-height:1;color:var(--white);text-decoration:none;letter-spacing:-.01em;
+  }
+  .logo span{color:var(--yellow)}
+  .logo small{
+    display:block;font-size:9px;font-weight:700;font-style:normal;
+    letter-spacing:.28em;color:var(--muted);margin-top:3px;
+  }
+  .pills{display:flex;gap:8px}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:13px;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:.02em;
+    padding:9px 14px;border-radius:999px;text-decoration:none;white-space:nowrap;
+  }
+  .pill-call{border:1.5px solid var(--white);color:var(--white)}
+  .pill-quote{background:var(--yellow);color:var(--black)}
+  .pill:active{transform:scale(.97)}
+  @media(max-width:420px){ .pill-call .num{display:none} } /* shrink to "Call" on small phones */
 
-/* ---------- before/after ---------- */
-.ba-frame{
-  position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line-soft);
-  background:var(--panel);margin-top:26px;user-select:none;-webkit-user-select:none;
-}
-.ba-pane{width:100%}
-.ba-pane svg,.ba-pane img{width:100%;height:auto;display:block}
-.ba-before{position:absolute;inset:0;overflow:hidden}   /* clipped by JS width */
-.ba-before .ba-pane{position:absolute;inset:0}
-.ba-divider{
-  position:absolute;top:0;bottom:0;width:2px;background:var(--gold);
-  box-shadow:0 0 12px rgba(245,179,1,.6);pointer-events:none;
-}
-.ba-knob{
-  position:absolute;top:50%;transform:translate(-50%,-50%);
-  width:44px;height:44px;border-radius:50%;background:var(--grad-gold);
-  display:grid;place-items:center;color:#161001;font-weight:900;font-size:15px;
-  box-shadow:0 4px 16px rgba(0,0,0,.5);pointer-events:none;
-}
-.ba-range{
-  position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;
-  -webkit-appearance:none;appearance:none;touch-action:none;
-}
-.ba-tag{
-  position:absolute;top:12px;padding:5px 10px;border-radius:8px;font-size:11px;font-weight:800;
-  letter-spacing:.12em;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
-}
-.ba-tag.before{left:12px;color:#d8d4cb}
-.ba-tag.after{right:12px;color:var(--gold)}
-.ba-hint{margin-top:10px;font-size:12.5px;color:var(--dim);text-align:center}
+  /* slim anchor nav */
+  .nav{
+    display:flex;gap:22px;justify-content:center;
+    padding:10px 16px;border-top:1px solid var(--line);
+    overflow-x:auto;scrollbar-width:none;
+  }
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{
+    font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--white);text-decoration:none;white-space:nowrap;
+  }
 
-/* ---------- services ---------- */
-.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
-@media (min-width:768px){ .svc-grid{grid-template-columns:repeat(3,1fr);gap:14px} }
-.svc{
-  display:flex;flex-direction:column;gap:8px;padding:16px 14px;border-radius:14px;
-  background:var(--panel);border:1px solid var(--line-soft);text-align:left;color:var(--ink);
-  transition:border-color .2s;
-}
-.svc:hover{border-color:var(--line)}
-.svc .ic{width:26px;height:26px;color:var(--gold)}
-.svc b{font-size:14.5px;letter-spacing:-.01em}
-.svc span{font-size:12px;color:var(--dim);line-height:1.4}
-.svc .go{margin-top:auto;font-size:12px;font-weight:800;color:var(--gold)}
-.price-note{margin-top:18px;font-size:13px;color:var(--dim)}
-.price-note b{color:var(--ink)}
+  /* ========== 3. STATEMENT HERO (borrowed pattern) ========== */
+  .hero{
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(130% 80% at 80% 0%,rgba(255,212,0,.10),transparent 55%),
+      radial-gradient(90% 60% at 8% 100%,rgba(255,255,255,.05),transparent 60%),
+      var(--black);
+    padding:48px 0 72px;
+  }
+  .quote-top{padding:0;margin-top:-40px;position:relative;z-index:2}
+  .quote-top .quote-panel{box-shadow:0 10px 40px rgba(0,0,0,.5)}
+  .hero::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.05) 50%,transparent 58%);
+  }
+  .hero h1{
+    font-size:clamp(44px,12vw,84px);
+    color:var(--white);
+  }
+  .hero h1 .u{
+    display:inline-block;position:relative;
+  }
+  .hero h1 .u::after{ /* accent underline, borrowed move */
+    content:"";position:absolute;left:0;right:6%;bottom:.04em;height:.11em;
+    background:var(--yellow);
+  }
+  .hero p.sub{color:var(--muted);margin:16px 0 28px;font-size:17px;max-width:36ch}
+  .hero .rating{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--white);
+    margin-bottom:8px;
+  }
+  .hero .rating .st{color:var(--yellow);letter-spacing:2px;font-size:15px}
+  .cta{
+    display:block;width:100%;text-align:center;text-decoration:none;
+    background:var(--yellow);color:var(--black);
+    font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:.03em;
+    font-size:19px;padding:18px 24px;border-radius:8px;border:none;cursor:pointer;
+    box-shadow:0 6px 24px rgba(255,212,0,.25);
+    transition:transform .15s ease,background .15s ease;
+  }
+  .cta:active{transform:scale(.98);background:var(--yellow-deep)}
+  .call-under{display:block;text-align:center;margin-top:14px;color:var(--white);text-decoration:none;font-size:16px}
+  .call-under strong{color:var(--yellow)}
 
-/* ---------- trust / reviews ---------- */
-.trust-grid{display:grid;gap:12px;margin-top:24px}
-@media (min-width:768px){ .trust-grid{grid-template-columns:repeat(3,1fr)} }
-.tcard{padding:18px;border-radius:14px;background:var(--panel);border:1px solid var(--line-soft)}
-.tcard .big{font-size:1.7rem;font-weight:800}
-.tcard .big .star{color:var(--gold)}
-.tcard p{font-size:13px;color:var(--dim);margin-top:6px}
-.tcard a{color:var(--gold);font-weight:700;font-size:13px}
-.tcard.placeholder{
-  border:1.5px dashed rgba(245,179,1,.35);background:transparent;
-}
-.tcard.placeholder .ph-label{
-  font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;
-}
-.tcard.placeholder p{color:var(--dim)}
+  /* ========== 4. ICON SERVICE STRIP over hero bottom (borrowed pattern) ========== */
+  .icon-strip{
+    position:relative;margin-top:36px;z-index:2;
+  }
+  .icon-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  }
+  .icon-cell{
+    background:var(--panel);padding:20px 8px 16px;text-align:center;
+    text-decoration:none;color:var(--white);
+    transition:background .15s ease;
+  }
+  .icon-cell:active{background:#1b1b21}
+  .icon-cell svg{width:34px;height:34px;stroke:var(--yellow);fill:none;stroke-width:1.6;margin-bottom:8px}
+  .icon-cell b{
+    display:block;font-size:12px;font-weight:900;font-style:italic;
+    text-transform:uppercase;letter-spacing:.04em;line-height:1.2;
+  }
 
-/* ---------- form ---------- */
-.quote{background:linear-gradient(180deg,rgba(245,179,1,.06),transparent 60%);border-block:1px solid var(--line-soft)}
-form{margin-top:22px;display:grid;gap:12px;max-width:520px}
-label{font-size:12.5px;font-weight:700;color:var(--dim);display:block;margin-bottom:5px}
-input,select,textarea{
-  width:100%;min-height:50px;padding:12px 14px;border-radius:12px;font-size:16px;color:var(--ink);
-  background:var(--panel);border:1px solid var(--line-soft);
-}
-input::placeholder,textarea::placeholder{color:#6f6a61}
-input:focus,select:focus,textarea:focus{border-color:var(--gold);outline:none}
-select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f5b301' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
-.hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden} /* honeypot */
-.fine{font-size:12px;color:var(--dim)}
-.form-ok{
-  display:none;padding:18px;border-radius:14px;border:1px solid rgba(90,200,120,.4);
-  background:rgba(90,200,120,.08);font-weight:600;
-}
-.form-ok.show{display:block}
-.form-err{display:none;font-size:13.5px;color:#ffb0a3;font-weight:600}
-.form-err.show{display:block}
-.form-err a{color:var(--gold);text-decoration:underline}
+  /* ========== shared section styles ========== */
+  section{padding:52px 0}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:10px}
+  h2{font-size:clamp(28px,7vw,40px);margin-bottom:8px}
+  .lead{color:var(--muted);margin-bottom:26px;font-size:16px}
+  .stripe{height:6px;background:repeating-linear-gradient(-45deg,var(--yellow) 0 14px,var(--black) 14px 22px)}
 
-/* ---------- footer ---------- */
-footer{border-top:1px solid var(--line-soft);padding:26px 20px 34px;font-size:13px;color:var(--dim)}
-footer .wrap{display:grid;gap:10px}
-footer a{color:var(--ink);font-weight:600}
-footer .yl{color:var(--gold)}
+  .fade{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+  .fade.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .fade{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
 
-/* ---------- sticky mobile bar ---------- */
-.sticky-bar{
-  position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;gap:10px;
-  padding:12px 14px calc(12px + env(safe-area-inset-bottom));
-  background:rgba(11,11,13,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line-soft);
-  transition:transform .3s ease;
-}
-.sticky-bar.hide{transform:translateY(110%)}
-.sticky-bar .btn{flex:1;min-height:50px;font-size:15px;padding:10px}
-@media (min-width:768px){ .sticky-bar{display:none} }
+  /* ========== before/after slider (signature, kept) ========== */
+  .ba{
+    position:relative;width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;
+    border:1px solid var(--line);user-select:none;touch-action:none;
+  }
+  .ba-img{position:absolute;inset:0;display:flex;align-items:flex-end;padding:14px}
+  /* PLACEHOLDER PANELS — replace each background with a real photo:
+     .ba-before{background:url('before.jpg') center/cover}
+     .ba-after {background:url('after.jpg')  center/cover}  */
+  .ba-before{
+    background:
+      repeating-linear-gradient(35deg,rgba(255,255,255,.05) 0 2px,transparent 2px 9px),
+      linear-gradient(160deg,#3a3a3e,#232326 60%,#1a1a1d);
+  }
+  .ba-after{
+    background:
+      linear-gradient(115deg,transparent 42%,rgba(255,255,255,.14) 50%,transparent 58%),
+      radial-gradient(90% 120% at 70% 0%,rgba(255,212,0,.12),transparent 55%),
+      linear-gradient(160deg,#111114,#050506 70%);
+    clip-path:inset(0 0 0 var(--cut,50%));
+  }
+  .ba-tag{
+    font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    background:rgba(0,0,0,.65);color:var(--white);padding:5px 9px;border-radius:4px;
+  }
+  .ba-after .ba-tag{color:var(--yellow);margin-left:auto}
+  .ba-handle{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:3px;background:var(--yellow);transform:translateX(-50%)}
+  .ba-handle::after{
+    content:"◂ ▸";display:flex;align-items:center;justify-content:center;
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:46px;height:46px;border-radius:50%;
+    background:var(--yellow);color:var(--black);
+    font-size:13px;font-weight:900;letter-spacing:-1px;
+    box-shadow:0 4px 14px rgba(0,0,0,.5);
+  }
+  .ba-note{font-size:13px;color:var(--muted);margin-top:10px}
+  .ba-note b{color:var(--yellow)}
+
+  /* ========== services ========== */
+  .svc{display:grid;gap:12px}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .card h3{font-size:19px;color:var(--white)}
+  .card p{font-size:14px;color:var(--muted);margin-top:2px}
+  .card .q{
+    flex-shrink:0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--yellow);border:1px solid rgba(255,212,0,.4);border-radius:20px;padding:6px 12px;text-decoration:none;
+  }
+
+  /* ========== location ========== */
+  .loc{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+  .loc strong{display:block;font-size:17px;margin-bottom:4px}
+  .loc span{color:var(--muted);font-size:15px}
+  .loc .mobile-tag{
+    display:inline-block;margin-top:12px;font-size:13px;font-weight:700;
+    color:var(--black);background:var(--yellow);border-radius:4px;padding:4px 10px;
+    font-style:italic;text-transform:uppercase;letter-spacing:.04em;
+  }
+
+  /* ========== reviews (placeholders) ========== */
+  .rev{background:var(--panel);border:1px dashed rgba(255,212,0,.45);border-radius:10px;padding:18px;margin-bottom:12px}
+  .rev .stars{color:var(--yellow);letter-spacing:3px;font-size:15px;margin-bottom:8px}
+  .rev p{font-size:15px;color:var(--muted);font-style:italic}
+  .rev .who{margin-top:10px;font-size:13px;color:var(--white);font-style:normal;font-weight:700}
+  .rev .ph{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow);margin-bottom:6px;font-weight:700}
+
+  /* ========== quote form — white panel (borrowed pattern) ========== */
+  .quote-panel{
+    background:var(--white);color:var(--black);
+    border-radius:14px;padding:26px 20px;
+  }
+  .quote-panel .eyebrow{color:#8a7400}
+  .quote-panel h2{color:var(--black)}
+  .quote-panel .lead{color:#55555c}
+  form{display:grid;gap:12px}
+  label{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#55555c}
+  input,select,textarea{
+    width:100%;background:#fff;border:1.5px solid #d7d7dc;border-radius:8px;
+    color:var(--black);font-family:inherit;font-size:16px;padding:14px;
+  }
+  input:focus,select:focus,textarea:focus,.cta:focus-visible,a:focus-visible{
+    outline:2px solid var(--yellow-deep);outline-offset:2px;border-color:var(--yellow-deep);
+  }
+  .form-msg{font-size:15px;text-align:center;display:none}
+  .form-msg.ok{display:block;color:#7a6500;font-weight:700}
+  .form-msg.err{display:block;color:#c0392b}
+  .fine{font-size:12px;color:#8a8a92;text-align:center;margin-top:4px}
+
+  footer{padding:36px 0 30px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+  /* ========== sticky mobile call bar ========== */
+  .sticky-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    display:flex;gap:1px;background:var(--line);border-top:1px solid var(--line);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .sticky-bar a{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:17px 10px;text-decoration:none;
+    font-weight:900;font-style:italic;text-transform:uppercase;font-size:15px;letter-spacing:.03em;
+  }
+  .sb-call{background:var(--black);color:var(--yellow)}
+  .sb-quote{background:var(--yellow);color:var(--black)}
+  @media(min-width:760px){ .sticky-bar{display:none} body{padding-bottom:0} }
 </style>
 </head>
 <body>
 
-<header>
-  <a class="brand" href="#top" aria-label="Supremacy Car Care — home">
-    <svg class="crown" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5l4.2 4 4.8-6 4.8 6 4.2-4v8.7a1.8 1.8 0 0 1-1.8 1.8H4.8A1.8 1.8 0 0 1 3 17.2z" fill="#f5b301"/></svg>
-    <span class="wordmark">SUPREMACY<small>CAR CARE · PASO ROBLES</small></span>
-  </a>
-  <a class="call-mini" href="tel:+18057122778" aria-label="Call Supremacy Car Care">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f5b301" stroke-width="2.2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
-    (805) 712-2778
-  </a>
+<!-- ===== 1. ANNOUNCEMENT BAR ===== -->
+<a class="announce" href="#quote">⚡ Free quote in 60 seconds — tap here</a>
+<p class="subline">Detailing · Ceramic Tint · PPF — <b>Paso Robles</b> · 5.0★ on Google</p>
+
+<!-- ===== 2. UTILITY HEADER ===== -->
+<div class="hdr">
+  <div class="hdr-row">
+    <a class="logo" href="#top">Supremacy<span>.</span><small>CAR CARE</small></a>
+    <div class="pills">
+      <a class="pill pill-call" href="tel:+18057122778">📞 <span class="num">805-712-2778</span><span style="display:none">Call</span></a>
+      <a class="pill pill-quote" href="#quote">Quick Quote</a>
+    </div>
+  </div>
+  <nav class="nav" aria-label="Sections">
+    <a href="#work">Our Work</a>
+    <a href="#services">Services</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#quote">Get A Quote</a>
+  </nav>
+</div>
+
+<!-- ===== 3. STATEMENT HERO ===== -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1><span class="u">Flawless,</span><br>every panel.</h1>
+    <p class="sub">Mobile detailing, ceramic tint & paint protection in Paso Robles — interior and exterior, done once, done right.</p>
+    <p class="rating"><span class="st">★★★★★</span> 5.0 · 40 Google reviews</p>
+  </div>
 </header>
 
-<main id="top">
-
-  <!-- ============ hero ============ -->
-  <section class="hero wrap">
-    <h1>Showroom clean.<br><span class="gold">Every single time.</span></h1>
-    <p class="sub">Hand wash, full detailing, paint correction &amp; protection —
-      Paso Robles’ 5-star detail crew. Tell us about your car and
-      <b style="color:var(--ink)">get a quote in about 60 seconds.</b></p>
-    <div class="cta-row">
-      <a class="btn btn-gold" href="#quote">Get my free quote →</a>
-      <a class="btn btn-ghost" href="tel:+18057122778">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
-        (805) 712-2778
-      </a>
-    </div>
-    <div class="chips">
-      <span class="chip"><span class="star">★</span><b>5.0 on Yelp</b></span>
-      <span class="chip">Open daily <b>7 AM – 7 PM</b></span>
-      <span class="chip">Replies in <b>~3 hours</b></span>
-    </div>
-  </section>
-
-  <!-- ============ before / after ============ -->
-  <section class="wrap" id="difference">
-    <p class="kicker rv">The Supremacy difference</p>
-    <h2 class="rv">Drag it. See it.</h2>
-    <p class="sub rv">This is the standard your car leaves with.</p>
-
-    <div class="ba-frame rv" id="ba">
-      <!-- AFTER (base layer) -->
-      <!-- SWAP: replace this <svg> with <img class="ba-pane" src="after.jpg" alt="After detailing"> -->
-      <div class="ba-pane" aria-hidden="true">
-        <svg viewBox="0 0 800 420" role="img" aria-label="Illustration: glossy detailed car">
-          <defs>
-            <linearGradient id="skyA" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#17161b"/><stop offset="1" stop-color="#0d0c10"/>
-            </linearGradient>
-            <linearGradient id="bodyA" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#3c3c44"/><stop offset=".45" stop-color="#101014"/>
-              <stop offset=".55" stop-color="#08080a"/><stop offset="1" stop-color="#26262c"/>
-            </linearGradient>
-            <linearGradient id="glowA" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#f5b301" stop-opacity="0"/><stop offset=".5" stop-color="#f5b301" stop-opacity=".55"/><stop offset="1" stop-color="#f5b301" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <rect width="800" height="420" fill="url(#skyA)"/>
-          <rect y="330" width="800" height="90" fill="#0a0a0c"/>
-          <ellipse cx="400" cy="345" rx="300" ry="14" fill="#f5b301" opacity=".08"/>
-          <path d="M160 300 C170 250 220 215 300 205 C340 165 420 150 480 165 C540 178 570 205 590 215 C660 222 690 250 695 285 C700 300 690 310 675 310 L180 310 C165 310 158 306 160 300Z" fill="url(#bodyA)" stroke="#4a4a52" stroke-width="1.5"/>
-          <path d="M312 208 C350 172 420 160 470 172 L488 210 Z" fill="#0c0c10" stroke="#3c3c44"/>
-          <path d="M300 208 C340 170 424 156 482 170" fill="none" stroke="url(#glowA)" stroke-width="3"/>
-          <circle cx="270" cy="310" r="44" fill="#0a0a0c" stroke="#3a3a42" stroke-width="3"/>
-          <circle cx="270" cy="310" r="26" fill="#141418" stroke="#f5b301" stroke-width="2"/>
-          <circle cx="560" cy="310" r="44" fill="#0a0a0c" stroke="#3a3a42" stroke-width="3"/>
-          <circle cx="560" cy="310" r="26" fill="#141418" stroke="#f5b301" stroke-width="2"/>
-          <path d="M180 262 L640 262" stroke="#ffffff" stroke-opacity=".18" stroke-width="2"/>
-          <path d="M600 236 l14 -5 M615 246 l16 -3" stroke="#ffd34d" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M188 232 l7 -14 7 14 14 3 -11 10 3 15 -13 -8 -13 8 3 -15 -11 -10z" fill="#ffd34d" opacity=".9"/>
-        </svg>
+<!-- ===== QUOTE FORM — WHITE PANEL (TOP POSITION) ===== -->
+<section class="wrap fade quote-top" id="quote">
+  <div class="quote-panel">
+    <p class="eyebrow">Start Here</p>
+    <h2>Free Quote In 60 Seconds</h2>
+    <p class="lead">Drop your info — we'll text you back fast.</p>
+    <form id="ghlForm" novalidate>
+      <div>
+        <label for="f-name">Name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required>
       </div>
-
-      <!-- BEFORE (clipped top layer) -->
-      <div class="ba-before" id="ba-before" aria-hidden="true">
-        <!-- SWAP: replace this <svg> with <img class="ba-pane" src="before.jpg" alt="Before detailing"> -->
-        <div class="ba-pane">
-          <svg viewBox="0 0 800 420" role="img" aria-label="Illustration: dusty unwashed car">
-            <defs>
-              <linearGradient id="skyB" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#232019"/><stop offset="1" stop-color="#151310"/>
-              </linearGradient>
-              <linearGradient id="bodyB" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#565046"/><stop offset=".5" stop-color="#3b372f"/><stop offset="1" stop-color="#4a453b"/>
-              </linearGradient>
-            </defs>
-            <rect width="800" height="420" fill="url(#skyB)"/>
-            <rect y="330" width="800" height="90" fill="#181510"/>
-            <path d="M160 300 C170 250 220 215 300 205 C340 165 420 150 480 165 C540 178 570 205 590 215 C660 222 690 250 695 285 C700 300 690 310 675 310 L180 310 C165 310 158 306 160 300Z" fill="url(#bodyB)" stroke="#5c564a" stroke-width="1.5"/>
-            <path d="M312 208 C350 172 420 160 470 172 L488 210 Z" fill="#2c2922" stroke="#4c473c"/>
-            <circle cx="270" cy="310" r="44" fill="#1c1914" stroke="#4c473c" stroke-width="3"/>
-            <circle cx="270" cy="310" r="26" fill="#2a261f"/>
-            <circle cx="560" cy="310" r="44" fill="#1c1914" stroke="#4c473c" stroke-width="3"/>
-            <circle cx="560" cy="310" r="26" fill="#2a261f"/>
-            <g fill="#6b6354" opacity=".8">
-              <circle cx="360" cy="250" r="3"/><circle cx="410" cy="272" r="2.4"/><circle cx="330" cy="285" r="2.8"/>
-              <circle cx="470" cy="240" r="2.2"/><circle cx="520" cy="268" r="3.1"/><circle cx="445" cy="295" r="2.5"/>
-              <circle cx="382" cy="230" r="2"/><circle cx="560" cy="248" r="2.3"/><circle cx="300" cy="255" r="2.2"/>
-            </g>
-            <path d="M240 300 q10 -26 2 -52" stroke="#6b6354" stroke-width="4" fill="none" opacity=".55"/>
-            <path d="M598 296 q8 -20 0 -40" stroke="#6b6354" stroke-width="4" fill="none" opacity=".45"/>
-          </svg>
-        </div>
+      <div>
+        <label for="f-phone">Phone</label>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
       </div>
-
-      <div class="ba-divider" id="ba-line"></div>
-      <div class="ba-knob" id="ba-knob" aria-hidden="true">⇄</div>
-      <span class="ba-tag before">BEFORE</span>
-      <span class="ba-tag after">AFTER</span>
-      <input class="ba-range" id="ba-range" type="range" min="0" max="100" value="50"
-             aria-label="Before and after comparison — slide to reveal">
-    </div>
-    <p class="ba-hint rv">← drag the handle → &nbsp;·&nbsp; illustration for now — your real before/after photos drop straight in</p>
-  </section>
-
-  <!-- ============ services ============ -->
-  <section class="wrap" id="services">
-    <p class="kicker rv">Verified services</p>
-    <h2 class="rv">What we do</h2>
-    <div class="svc-grid">
-      <button class="svc rv" data-svc="Hand wash">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg>
-        <b>Hand wash</b><span>Proper two-bucket wash — no swirl-inducing tunnels.</span>
-        <span class="go">Get quote →</span>
-      </button>
-      <button class="svc rv" data-svc="Touchless wash">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 14c2-1 4-1 6 0s4 1 6 0 3-1 4 0M4 18c2-1 4-1 6 0s4 1 6 0 3-1 4 0M7 9a5 5 0 0 1 10 0"/></svg>
-        <b>Touchless wash</b><span>Safe foam &amp; pressure clean for delicate finishes.</span>
-        <span class="go">Get quote →</span>
-      </button>
-      <button class="svc rv" data-svc="Full detail (interior + exterior)">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8z"/><path d="M19 15l.9 2.6L22.5 18l-2.6.9L19 21.5l-.9-2.6L15.5 18l2.6-.9z"/></svg>
-        <b>Full detail</b><span>Interior + exterior, brought back to showroom.</span>
-        <span class="go">Get quote →</span>
-      </button>
-      <button class="svc rv" data-svc="Paint correction">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v4M12 16v4M4 12h4M16 12h4"/></svg>
-        <b>Paint correction</b><span>Machine-polished. Swirls and haze, gone.</span>
-        <span class="go">Get quote →</span>
-      </button>
-      <button class="svc rv" data-svc="Scratch removal">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20L20 4M9 4l11 11M4 15l5 5"/></svg>
-        <b>Scratch removal</b><span>Light scratches buffed out, not covered up.</span>
-        <span class="go">Get quote →</span>
-      </button>
-      <button class="svc rv" data-svc="Bug & sap removal">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="13" r="5"/><path d="M12 8V5M8.5 9.5L6 7M15.5 9.5L18 7M7 13H4M20 13h-3M8.5 16.5L6 19M15.5 16.5L18 19"/></svg>
-        <b>Bug &amp; sap removal</b><span>Baked-on gunk lifted safely off the clear coat.</span>
-        <span class="go">Get quote →</span>
-      </button>
-      <button class="svc rv" data-svc="Ceramic / exterior protection">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>
-        <b>Protection</b><span>Ceramic &amp; exterior protection that outlasts wax.</span>
-        <span class="go">Get quote →</span>
-      </button>
-    </div>
-    <p class="price-note rv"><b>No menu prices — every car’s different.</b>
-      Answer four quick questions and get a straight number, usually within 3 hours.</p>
-  </section>
-
-  <!-- ============ trust ============ -->
-  <section class="wrap" id="reviews">
-    <p class="kicker rv">Word around Paso</p>
-    <h2 class="rv">Locals rate us 5.0</h2>
-    <div class="trust-grid">
-      <div class="tcard rv">
-        <div class="big"><span class="star">★★★★★</span> 5.0</div>
-        <p>Rated 5.0 on Yelp · fast, excellent-quality responses · 6 locals recently requested a quote.</p>
-        <a href="https://www.yelp.com/biz/supremacy-car-care-paso-robles" rel="noopener" target="_blank">Read it on Yelp →</a>
+      <div>
+        <label for="f-svc">Service</label>
+        <select id="f-svc" name="service" required>
+          <option value="" selected disabled>Choose one…</option>
+          <option>Full Detailing</option>
+          <option>Ceramic Tint</option>
+          <option>Paint Protection Film</option>
+          <option>Not sure — help me decide</option>
+        </select>
       </div>
-      <!-- REAL REVIEWS ONLY: paste actual customer quotes below, then remove the dashed styling -->
-      <div class="tcard placeholder rv">
-        <div class="ph-label">Placeholder — real review goes here</div>
-        <p>Paste a genuine customer quote + first name. This site doesn’t do fake testimonials.</p>
+      <div>
+        <label for="f-msg">Vehicle / anything else <span style="text-transform:none;font-weight:500">(optional)</span></label>
+        <textarea id="f-msg" name="message" rows="3" placeholder="e.g. 2022 Tacoma, front-end PPF"></textarea>
       </div>
-      <div class="tcard placeholder rv">
-        <div class="ph-label">Placeholder — real review goes here</div>
-        <p>Second slot. Google / Yelp / text-message praise all work — just keep it real.</p>
-      </div>
+      <button class="cta" type="submit" id="submitBtn">Send My Quote Request</button>
+      <p class="form-msg" id="formMsg" role="status"></p>
+      <p class="fine">We reply by text. No spam, ever.</p>
+    </form>
+    <a class="call-under" href="tel:+18057122778" style="color:var(--black)">or call now — <strong style="color:#8a7400">(805) 712-2778</strong></a>
+  </div>
+</section>
+
+<!-- ===== 4. ICON SERVICE STRIP ===== -->
+<div class="icon-strip wrap">
+  <div class="icon-grid">
+    <a class="icon-cell" href="#quote">
+      <svg viewBox="0 0 24 24"><path d="M3 13l2-5c.4-1 1.2-1.5 2.2-1.5h9.6c1 0 1.8.5 2.2 1.5l2 5M4 13h16a1 1 0 0 1 1 1v3h-2.5M3 14v3h2.5m0 0a2 2 0 1 0 4 0m-4 0a2 2 0 1 1 4 0m7 0a2 2 0 1 0 4 0m-4 0a2 2 0 1 1 4 0"/></svg>
+      <b>Full<br>Detailing</b>
+    </a>
+    <a class="icon-cell" href="#quote">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15L15 5M7 19L21 8"/></svg>
+      <b>Ceramic<br>Tint</b>
+    </a>
+    <a class="icon-cell" href="#quote">
+      <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/><path d="M9 11.5l2 2 4-4.5"/></svg>
+      <b>Paint<br>Protection</b>
+    </a>
+  </div>
+</div>
+
+<!-- ===== BEFORE / AFTER (signature, kept) ===== -->
+<section class="wrap fade" id="work">
+  <p class="eyebrow">The Proof</p>
+  <h2>Drag It. See It.</h2>
+  <p class="lead">Slide to see what a Supremacy finish looks like.</p>
+  <div class="ba" id="ba" aria-label="Before and after comparison slider. Drag left or right.">
+    <div class="ba-img ba-before"><span class="ba-tag">Before</span></div>
+    <div class="ba-img ba-after"><span class="ba-tag">After</span></div>
+    <div class="ba-handle" aria-hidden="true"></div>
+  </div>
+  <p class="ba-note"><b>[PLACEHOLDER]</b> Swap these panels for real before/after photos — see code comments.</p>
+</section>
+
+<div class="stripe"></div>
+
+<!-- ===== SERVICES ===== -->
+<section class="wrap fade" id="services">
+  <p class="eyebrow">What We Do</p>
+  <h2>Pick Your Finish</h2>
+  <p class="lead">No price games. Tell us your vehicle — <b style="color:var(--yellow)">quote in 60 seconds.</b></p>
+  <div class="svc">
+    <div class="card">
+      <div><h3>Full Detailing</h3><p>Interior + exterior, paint correction available</p></div>
+      <a class="q" href="#quote">60-sec quote</a>
     </div>
-  </section>
-
-  <!-- ============ quote form ============ -->
-  <section class="quote" id="quote">
-    <div class="wrap">
-      <p class="kicker rv">The 60-second part</p>
-      <h2 class="rv">Get your quote</h2>
-      <p class="sub rv">Four questions. We text you a straight number — usually within 3 hours, during open hours (7–7 daily).</p>
-
-      <form id="quote-form" novalidate>
-        <div>
-          <label for="f-name">Your name</label>
-          <input id="f-name" name="name" autocomplete="name" placeholder="Alex Rivera" required>
-        </div>
-        <div>
-          <label for="f-phone">Mobile number</label>
-          <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(805) 555-0123" required>
-        </div>
-        <div>
-          <label for="f-vehicle">Vehicle</label>
-          <input id="f-vehicle" name="vehicle" placeholder="2021 Tacoma, black" required>
-        </div>
-        <div>
-          <label for="f-service">What does it need?</label>
-          <select id="f-service" name="service" required>
-            <option value="" disabled selected>Choose a service…</option>
-            <option>Hand wash</option>
-            <option>Touchless wash</option>
-            <option>Full detail (interior + exterior)</option>
-            <option>Paint correction</option>
-            <option>Scratch removal</option>
-            <option>Bug &amp; sap removal</option>
-            <option>Ceramic / exterior protection</option>
-            <option>Not sure — help me choose</option>
-          </select>
-        </div>
-        <!-- honeypot -->
-        <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
-
-        <button class="btn btn-gold" type="submit" id="f-btn">Text me my quote</button>
-        <p class="fine">No spam, ever. One text with your number, that’s it.</p>
-        <p class="form-err" id="form-err">Couldn’t send just now — <a href="tel:+18057122778">tap to call (805) 712-2778</a> and we’ll quote you on the spot.</p>
-      </form>
-      <div class="form-ok" id="form-ok" role="status"></div>
+    <div class="card">
+      <div><h3>Ceramic Tint</h3><p>Heat rejection, UV block, lifetime warranty</p></div>
+      <a class="q" href="#quote">60-sec quote</a>
     </div>
-  </section>
+    <div class="card">
+      <div><h3>Paint Protection Film</h3><p>Self-healing PPF for high-impact zones or full body</p></div>
+      <a class="q" href="#quote">60-sec quote</a>
+    </div>
+  </div>
+</section>
 
-</main>
+<!-- ===== LOCATION ===== -->
+<section class="wrap fade">
+  <p class="eyebrow">Where</p>
+  <h2>Paso Robles & Beyond</h2>
+  <div class="loc">
+    <strong>Supremacy Car Care</strong>
+    <span>3444 Park St, Paso Robles, CA 93446</span><br>
+    <span>Open daily · closes 7 PM</span><br>
+    <span class="mobile-tag">Mobile service — we come to you</span>
+  </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section class="wrap fade" id="reviews">
+  <p class="eyebrow">Word On The Street</p>
+  <h2>Real Reviews</h2>
+  <p class="lead">5.0★ across 40 Google reviews — no fluff.</p>
+  <!-- REAL REVIEWS ONLY. Replace each block with an actual customer review.
+       Delete any slot you can't fill yet. -->
+  <div class="rev">
+    <p class="ph">Placeholder — paste real review #1</p>
+    <div class="stars">★★★★★</div>
+    <p>"[Customer's exact words go here]"</p>
+    <p class="who">— [First name, vehicle]</p>
+  </div>
+  <div class="rev">
+    <p class="ph">Placeholder — paste real review #2</p>
+    <div class="stars">★★★★★</div>
+    <p>"[Customer's exact words go here]"</p>
+    <p class="who">— [First name, vehicle]</p>
+  </div>
+</section>
 
 <footer>
   <div class="wrap">
-    <span><b style="color:var(--ink)">Supremacy Car Care</b> · Paso Robles, CA</span>
-    <span><a href="https://maps.google.com/?q=3444+Park+St,+Paso+Robles,+CA+93446" rel="noopener" target="_blank">3444 Park St, Paso Robles, CA 93446</a></span>
-    <span><a href="tel:+18057122778">(805) 712-2778</a> · Open daily 7 AM – 7 PM</span>
-    <span><a class="yl" href="https://www.yelp.com/biz/supremacy-car-care-paso-robles" rel="noopener" target="_blank">★ 5.0 on Yelp</a></span>
+    Supremacy Car Care · 3444 Park St, Paso Robles, CA 93446 ·
+    <a href="tel:+18057122778">(805) 712-2778</a> · Open daily until 7 PM
   </div>
 </footer>
 
-<!-- sticky mobile bar -->
-<div class="sticky-bar" id="sticky-bar">
-  <a class="btn btn-ghost" href="tel:+18057122778">Call now</a>
-  <a class="btn btn-gold" href="#quote">Get my quote</a>
-</div>
+<!-- ===== STICKY MOBILE BAR ===== -->
+<nav class="sticky-bar" aria-label="Quick actions">
+  <a class="sb-call" href="tel:+18057122778">📞 Call Now</a>
+  <a class="sb-quote" href="#quote">Free Quote</a>
+</nav>
 
 <script>
+/* ---------- before/after slider ---------- */
 (function(){
-  'use strict';
-
-  /* ============================================================
-     PASTE YOUR GOHIGHLEVEL INBOUND WEBHOOK URL HERE:
-     ============================================================ */
-  var GHL_WEBHOOK_URL = ""; // e.g. "https://services.leadconnectorhq.com/hooks/XXXX/webhook-trigger/YYYY"
-
-  /* ---------- before/after slider ---------- */
-  var range = document.getElementById('ba-range');
-  var before = document.getElementById('ba-before');
-  var line = document.getElementById('ba-line');
-  var knob = document.getElementById('ba-knob');
-  function setBA(v){
-    before.style.clipPath = 'inset(0 ' + (100 - v) + '% 0 0)';
-    line.style.left = v + '%';
-    knob.style.left = v + '%';
+  const ba = document.getElementById('ba');
+  let dragging = false;
+  function setCut(clientX){
+    const r = ba.getBoundingClientRect();
+    let pct = ((clientX - r.left) / r.width) * 100;
+    pct = Math.max(3, Math.min(97, pct));
+    ba.style.setProperty('--cut', pct + '%');
   }
-  range.addEventListener('input', function(){ setBA(this.value); });
-  setBA(range.value);
+  function start(e){ dragging = true; setCut(e.touches ? e.touches[0].clientX : e.clientX); }
+  function move(e){ if(!dragging) return; setCut(e.touches ? e.touches[0].clientX : e.clientX); }
+  function end(){ dragging = false; }
+  ba.addEventListener('pointerdown', start);
+  window.addEventListener('pointermove', move, {passive:true});
+  window.addEventListener('pointerup', end);
+  ba.addEventListener('touchstart', start, {passive:true});
+  window.addEventListener('touchmove', move, {passive:true});
+  window.addEventListener('touchend', end);
+})();
 
-  /* ---------- subtle reveals ---------- */
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var els = document.querySelectorAll('.rv');
-  if (reduced || !('IntersectionObserver' in window)){
-    els.forEach(function(el){ el.classList.add('in'); });
-  } else {
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
-      });
-    }, { rootMargin: '0px 0px -8% 0px' });
-    els.forEach(function(el){ io.observe(el); });
-  }
+/* ---------- subtle fade-ups ---------- */
+(function(){
+  const els = document.querySelectorAll('.fade');
+  if(!('IntersectionObserver' in window)){ els.forEach(el=>el.classList.add('in')); return; }
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  },{threshold:.12});
+  els.forEach(el=>io.observe(el));
+})();
 
-  /* ---------- service card -> prefill + jump ---------- */
-  var select = document.getElementById('f-service');
-  document.querySelectorAll('.svc').forEach(function(card){
-    card.addEventListener('click', function(){
-      var v = card.getAttribute('data-svc');
-      for (var i = 0; i < select.options.length; i++){
-        if (select.options[i].text.replace(/\s+/g,' ') === v){ select.selectedIndex = i; break; }
-      }
-      document.getElementById('quote').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
-    });
-  });
+/* ---------- GHL webhook form ---------- */
+(function(){
+  // TODO: paste your GoHighLevel inbound webhook URL here
+  const WEBHOOK_URL = "PASTE_YOUR_GHL_WEBHOOK_URL_HERE";
 
-  /* ---------- hide sticky bar while form is on screen ---------- */
-  var bar = document.getElementById('sticky-bar');
-  if ('IntersectionObserver' in window){
-    new IntersectionObserver(function(entries){
-      bar.classList.toggle('hide', entries[0].isIntersecting);
-    }, { threshold: 0.15 }).observe(document.getElementById('quote'));
-  }
+  const form = document.getElementById('ghlForm');
+  const btn  = document.getElementById('submitBtn');
+  const msg  = document.getElementById('formMsg');
 
-  /* ---------- quote form -> GoHighLevel webhook ---------- */
-  var form = document.getElementById('quote-form');
-  var ok = document.getElementById('form-ok');
-  var err = document.getElementById('form-err');
-  var btn = document.getElementById('f-btn');
-
-  /* carry Facebook-ad UTM params through to the CRM */
-  var utm = {};
-  new URLSearchParams(location.search).forEach(function(v, k){
-    if (/^(utm_|fbclid|gclid)/i.test(k)) utm[k] = v;
-  });
-
-  form.addEventListener('submit', function(e){
+  form.addEventListener('submit', async function(e){
     e.preventDefault();
-    err.classList.remove('show');
-    if (form.company.value) return; /* honeypot hit — silently drop */
-    if (!form.reportValidity()) return;
+    msg.className = 'form-msg';
 
-    var payload = {
-      name: form.name.value.trim(),
-      phone: form.phone.value.trim(),
-      vehicle: form.vehicle.value.trim(),
-      service: form.service.value,
-      source: 'landing-page',
-      page: location.href,
-      submitted_at: new Date().toISOString()
-    };
-    for (var k in utm) payload[k] = utm[k];
-
-    function success(){
-      form.style.display = 'none';
-      ok.textContent = '✓ Got it, ' + payload.name.split(' ')[0] +
-        '. We’ll text your quote to ' + payload.phone + ' shortly — usually within 3 hours (7 AM–7 PM).';
-      ok.classList.add('show');
-      ok.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
-    }
-    function failure(){
-      btn.disabled = false; btn.textContent = 'Text me my quote';
-      err.classList.add('show');
-    }
-
-    if (!GHL_WEBHOOK_URL){
-      /* webhook not wired yet — don't lose the lead: hand off to a call */
-      failure();
+    const name  = form.name.value.trim();
+    const phone = form.phone.value.trim();
+    const svc   = form.service.value;
+    if(!name || !phone || !svc){
+      msg.textContent = 'Add your name, phone, and service so we can text you back.';
+      msg.classList.add('err');
       return;
     }
-    btn.disabled = true; btn.textContent = 'Sending…';
-    fetch(GHL_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).then(function(r){ r.ok ? success() : failure(); })
-      .catch(failure);
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    try{
+      const res = await fetch(WEBHOOK_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          name: name,
+          phone: phone,
+          service: svc,
+          message: form.message.value.trim(),
+          source: 'Supremacy Landing Page v2',
+          page: location.href,
+          submitted_at: new Date().toISOString()
+        })
+      });
+      if(!res.ok) throw new Error('Webhook error ' + res.status);
+      form.reset();
+      msg.textContent = "Got it — watch your texts. We'll be quick. 🏁";
+      msg.classList.add('ok');
+      btn.textContent = 'Sent ✓';
+    }catch(err){
+      msg.textContent = "Something glitched. Tap Call Now below and we'll sort you out.";
+      msg.classList.add('err');
+      btn.disabled = false;
+      btn.textContent = 'Send My Quote Request';
+    }
   });
 })();
 </script>
-
 </body>
 </html>
