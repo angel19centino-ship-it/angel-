@@ -2,6 +2,12 @@
 
 A single-file, liquid-chrome landing page with one job: **book a call.**
 
+**Live at → https://angel19centino-ship-it.github.io/angel-/**
+
+Every push to the default branch redeploys automatically: the
+`Deploy to GitHub Pages` workflow republishes `index.html` to the
+`gh-pages` branch, which GitHub Pages serves.
+
 - **Stack** — one `index.html`. Three.js (raymarched chrome + halo, CDN) and GSAP ScrollTrigger (CDN). No build step: open the file or host it anywhere (GitHub Pages, Netlify, Vercel).
 - **Motion** — loader counter, masked headline reveal, scroll-scrubbed manifesto, velocity-reactive marquee, count-up stats, right-edge scroll progress rail, and a chrome sculpture that melts apart as you scroll and reassembles behind the final CTA.
 - **Respectful** — honors `prefers-reduced-motion` (static chrome frame, no tweens, final values shown), works with JavaScript or CDNs unavailable, and is fully responsive.
