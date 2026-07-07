@@ -24,6 +24,17 @@ score is remembered locally.
 **Play at → https://angel19centino-ship-it.github.io/angel-/snake/**
 (deploys with the site on the next push to the default branch)
 
+## SWEEP® — grace, restored
+
+A second game, built from four real photos of the house: `sweep/` is a
+point-and-click cleanup quest. Mom is home in 3:00 — tap every piece of
+clutter in the dining room, living room, game room, and backyard before
+the clock runs out. The dartboard, punching bag, and basketball hoop in
+the photos are playable mini-games worth bonus points. Works with mouse
+or touch; best score is remembered locally.
+
+**Play at → https://angel19centino-ship-it.github.io/angel-/sweep/**
+
 ## Customize
 
 Everything to change is marked with a `CUSTOMIZE ME` comment at the top of `index.html`:
