@@ -12,6 +12,18 @@ Every push to the default branch redeploys automatically: the
 - **Motion** — loader counter, masked headline reveal, scroll-scrubbed manifesto, velocity-reactive marquee, count-up stats, right-edge scroll progress rail, and a chrome sculpture that melts apart as you scroll and reassembles behind the final CTA.
 - **Respectful** — honors `prefers-reduced-motion` (static chrome frame, no tweens, final values shown), works with JavaScript or CDNs unavailable, and is fully responsive.
 
+## SERAPH® — snake, ascended
+
+The repo also ships a game: `snake/index.html`, a single-file,
+zero-dependency take on Snake in the same liquid-chrome style.
+Steer a ribbon of chrome, gather motes of light, and grab the golden
+halo that appears after every fifth one (worth five points, on a
+seven-second timer). Arrow keys / WASD or swipe; Space pauses; best
+score is remembered locally.
+
+**Play at → https://angel19centino-ship-it.github.io/angel-/snake/**
+(deploys with the site on the next push to the default branch)
+
 ## Customize
 
 Everything to change is marked with a `CUSTOMIZE ME` comment at the top of `index.html`:
