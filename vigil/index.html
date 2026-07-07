@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#020203">
+<title>VIGIL® — 3:00 AM</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕯️</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: #020203;
+    color: #e5e7eb;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .frame {
+    position: relative;
+    width: min(96vw, calc((100dvh - 70px) * 16 / 10), 1100px);
+    aspect-ratio: 16 / 10;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.9);
+  }
+  canvas#view {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    image-rendering: pixelated;
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .hud {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .hud .top {
+    position: absolute; top: 10px; left: 14px; right: 14px;
+    display: flex; justify-content: space-between;
+    font-size: clamp(10px, 1.6vmin, 13px);
+    letter-spacing: 0.22em;
+    color: rgba(229,231,235,0.75);
+    text-shadow: 0 1px 4px #000;
+  }
+  .hud .top b { color: #d4af37; margin-left: 6px; font-variant-numeric: tabular-nums; }
+  .hud .msg {
+    position: absolute; top: 16%; left: 0; right: 0;
+    text-align: center;
+    font-size: clamp(11px, 1.9vmin, 15px);
+    letter-spacing: 0.3em;
+    color: rgba(255,233,168,0.9);
+    text-shadow: 0 2px 8px #000;
+    opacity: 0; transition: opacity 0.6s;
+  }
+  .hud .msg.show { opacity: 1; }
+  .hud .prompt {
+    position: absolute; bottom: 18%; left: 0; right: 0;
+    text-align: center;
+    font-size: clamp(11px, 1.8vmin, 14px);
+    letter-spacing: 0.26em;
+    color: #ffe9a8;
+    text-shadow: 0 2px 8px #000;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .hud .prompt.show { opacity: 1; }
+  .hud .dot {
+    position: absolute; left: 50%; top: 50%;
+    width: 3px; height: 3px; border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    transform: translate(-50%, -50%);
+  }
+  .hud .stamina {
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    width: 130px; height: 4px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px; overflow: hidden;
+  }
+  .hud .stamina i { display: block; height: 100%; background: #7dd3a0; width: 100%; }
+  .hud .stamina.low i { background: #ef6a6a; }
+
+  .tbtn {
+    position: absolute; z-index: 6;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(10,10,15,0.45);
+    color: #e5e7eb;
+    border-radius: 50%;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+    display: none;
+    align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.touch .tbtn { display: flex; }
+  #sprintBtn { right: 18px; bottom: 60px; width: 64px; height: 64px; }
+  #collectBtn {
+    left: 50%; bottom: 24%; transform: translateX(-50%);
+    width: auto; height: auto; border-radius: 24px; padding: 12px 22px;
+    background: rgba(212,175,55,0.2); border-color: rgba(212,175,55,0.8); color: #ffe9a8;
+    display: none !important;
+  }
+  body.touch #collectBtn.show { display: flex !important; }
+
+  .overlay {
+    position: absolute; inset: 0; z-index: 20;
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; text-align: center; padding: 26px;
+    background: rgba(2,2,3,0.9);
+  }
+  .overlay.show { display: flex; }
+  .overlay .big {
+    font-size: clamp(26px, 6vmin, 48px);
+    font-weight: 800; letter-spacing: 0.3em; color: #f8fafc;
+  }
+  .overlay .gold { color: #d4af37; }
+  .overlay .red { color: #b91c1c; }
+  .overlay p { font-size: clamp(11px, 1.9vmin, 14px); letter-spacing: 0.12em; line-height: 2; color: #9ca3af; max-width: 46em; }
+  .overlay .btn {
+    background: #d4af37; color: #0a0a0f; border: none; border-radius: 8px;
+    font-weight: 800; letter-spacing: 0.24em; font-size: clamp(12px, 2vmin, 15px);
+    padding: 13px 36px; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .overlay .btn:hover { background: #e9c95c; }
+  .overlay .warn { font-size: 10px; letter-spacing: 0.2em; color: #6b7280; }
+
+  #memory {
+    position: absolute; inset: 0; z-index: 15;
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px;
+    background: rgba(2,2,3,0.92);
+  }
+  #memory.show { display: flex; }
+  #memory img {
+    max-width: 74%; max-height: 66%;
+    border: 1px solid rgba(212,175,55,0.6);
+    box-shadow: 0 0 60px rgba(212,175,55,0.15);
+  }
+  #memory p { letter-spacing: 0.3em; color: #ffe9a8; font-size: clamp(11px, 2vmin, 14px); }
+
+  footer { font-size: 10px; letter-spacing: 0.2em; color: #4b5563; }
+  footer a { color: #6b7280; text-decoration: none; }
+  footer a:hover { color: #d4af37; }
+</style>
+</head>
+<body>
+
+<div class="frame" id="frame">
+  <canvas id="view" width="360" height="225"></canvas>
+
+  <div class="hud">
+    <div class="top">
+      <span>MEMORIES<b id="mems">0/4</b></span>
+      <span id="clock">3:00<b>AM</b></span>
+    </div>
+    <div class="msg" id="msg"></div>
+    <div class="prompt" id="prompt"></div>
+    <div class="dot"></div>
+    <div class="stamina" id="stamBar"><i id="stamFill"></i></div>
+  </div>
+
+  <button class="tbtn" id="sprintBtn">RUN</button>
+  <button class="tbtn" id="collectBtn">TAKE THE MEMORY</button>
+
+  <div id="memory"><img id="memImg" alt="memory"><p id="memCap"></p></div>
+
+  <div class="overlay show" id="intro">
+    <div class="big">VIGIL<span class="gold">&reg;</span></div>
+    <p>3:00 AM. The house you cleaned is not empty.<br>
+       Four memories still hang on the walls. Take them all,<br>
+       and the <span class="gold">back gate</span> will open. Do not let it find you.</p>
+    <p><b style="color:#e5e7eb">WASD</b> move &nbsp;&middot;&nbsp; <b style="color:#e5e7eb">mouse / &larr;&rarr;</b> look
+       &nbsp;&middot;&nbsp; <b style="color:#e5e7eb">SHIFT</b> run &nbsp;&middot;&nbsp; <b style="color:#e5e7eb">E</b> take memory
+       &nbsp;&middot;&nbsp; on phones: left thumb moves, right thumb looks</p>
+    <button class="btn" id="startBtn">WAKE UP</button>
+    <p class="warn">HEADPHONES RECOMMENDED &nbsp;&middot;&nbsp; CONTAINS FLICKERING LIGHT AND SUDDEN IMAGERY</p>
+  </div>
+
+  <div class="overlay" id="dead">
+    <div class="big red">IT REMEMBERS YOU.</div>
+    <p id="deadStats"></p>
+    <button class="btn" id="retryBtn">WAKE UP AGAIN</button>
+  </div>
+
+  <div class="overlay" id="won">
+    <div class="big gold">DAWN.</div>
+    <p id="wonStats"></p>
+    <button class="btn" id="againBtn">RETURN TO THE HOUSE</button>
+  </div>
+
+  <div class="overlay" id="paused">
+    <div class="big">HELD BREATH</div>
+    <p>P to resume</p>
+  </div>
+</div>
+
+<footer><a href="../">&larr; ANGEL&reg;</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="../snake/">SERAPH&reg;</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="../sweep/">SWEEP&reg;</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;IT WAS NEVER CLEAN.</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---- map -----------------------------------------------------------
+  // # wood  S stone  W stucco  H hedge  D exit door  1-4 memory frames
+  const MAP_ROWS = [
+    '############SSSSSSSSSSSS',
+    '#......................S',
+    '#......................S',
+    '#..##1#.####SSSS.S2SS..S',
+    '#..#.......#........S..S',
+    '#..#.......#........S..S',
+    '#..#..##...#...SS...S..S',
+    '#.....##...#...SS......S',
+    '#..#.......#........S..S',
+    '#..#................S..S',
+    '#..#.......#........S..S',
+    '#..######.##HH.HHHHHS..S',
+    '#..#.......#........H..W',
+    '#..#.......#........H..W',
+    '#..#................H..W',
+    '#..#..##...#...HH...H..W',
+    '#.....##...#...HH......W',
+    '#..#.......#........H..W',
+    '#..#.......#........H..W',
+    '#..#.......#........H..W',
+    '#..##3#.####HHHH.H4HH..W',
+    '#......................W',
+    '#......................W',
+    '############DWWWWWWWWWWW',
+  ];
+  const CODES = { '.': 0, '#': 1, 'S': 2, 'W': 3, 'H': 4, 'D': 5, '1': 6, '2': 7, '3': 8, '4': 9 };
+  const N = 24;
+  const map = MAP_ROWS.map((row) => [...row].map((ch) => CODES[ch]));
+  const FRAMES = [];   // {x, y, taken}
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    if (map[y][x] >= 6) FRAMES[map[y][x] - 6] = { x, y, taken: false };
+  }
+  const MEM_CAPTIONS = ['THE DINING ROOM', 'THE LIVING ROOM', 'THE GAME ROOM', 'THE BACKYARD'];
+  const DOOR = { x: 12, y: 23 };
+  const params = new URLSearchParams(location.search);
+  const DEBUG = params.has('debug');
+  const SAFE = params.has('safe');
+  const STORE_KEY = 'vigil-best';
+
+  // ---- render setup -----------------------------------------------------
+  const canvas = document.getElementById('view');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const zbuf = new Float32Array(W);
+
+  const TEX_FILES = {
+    1: 'img/wood.jpg', 2: 'img/stone.jpg', 3: 'img/stucco.jpg', 4: 'img/hedge.jpg', 5: 'img/door.jpg',
+    6: 'img/frame1.jpg', 7: 'img/frame2.jpg', 8: 'img/frame3.jpg', 9: 'img/frame4.jpg', 0: 'img/frame0.jpg',
+  };
+  const tex = {};
+  let texReady = 0;
+  const texTotal = Object.keys(TEX_FILES).length;
+  for (const k in TEX_FILES) {
+    const img = new Image();
+    img.src = TEX_FILES[k];
+    img.onload = () => { texReady++; };
+    tex[k] = img;
+  }
+
+  // the entity, drawn once: a tall shadow with pale eyes
+  const entCanvas = document.createElement('canvas');
+  entCanvas.width = 128; entCanvas.height = 256;
+  (function drawEntity() {
+    const g = entCanvas.getContext('2d');
+    g.clearRect(0, 0, 128, 256);
+    for (let i = 5; i >= 0; i--) {
+      g.fillStyle = 'rgba(0,0,0,' + (0.28 + i * 0.12) + ')';
+      const w = 26 + i * 7;
+      g.beginPath();
+      g.ellipse(64, 64, w * 0.62, 34 + i * 4, 0, 0, Math.PI * 2);            // head
+      g.ellipse(64, 175, w, 96 + i * 6, 0, 0, Math.PI * 2);                  // body
+      g.fill();
+    }
+    g.fillStyle = 'rgba(220,228,235,0.85)';
+    g.beginPath(); g.arc(52, 60, 3.2, 0, Math.PI * 2); g.arc(76, 60, 3.2, 0, Math.PI * 2); g.fill();
+    g.fillStyle = 'rgba(120,140,160,0.4)';
+    g.beginPath(); g.arc(52, 60, 5.5, 0, Math.PI * 2); g.arc(76, 60, 5.5, 0, Math.PI * 2); g.fill();
+  })();
+
+  // ---- state ----------------------------------------------------------------
+  const p = { x: 2.5, y: 2.5, a: 0, fov: 0.66 };
+  const ent = { x: 18.5, y: 18.5, path: [], mode: 'patrol', target: null, repath: 0, lastSeen: -99, tpTimer: 8 };
+  let state = 'intro'; // intro | play | memory | dying | dead | won | paused
+  let doorOpen = false, taken = 0;
+  let stamina = 1, sprinting = false;
+  let startTime = 0, elapsed = 0, dieT = 0, memT = 0;
+  let flicker = 1, msgT = 0, stepAcc = 0;
+  let best = 0;
+  try { best = parseFloat(localStorage.getItem(STORE_KEY)) || 0; } catch (e) {}
+
+  const $ = (id) => document.getElementById(id);
+  const keys = {};
+
+  function resetRun() {
+    p.x = 2.5; p.y = 2.5; p.a = 0;
+    ent.x = 18.5; ent.y = 18.5; ent.path = []; ent.mode = 'patrol'; ent.target = null; ent.repath = 0; ent.lastSeen = -99; ent.tpTimer = 8;
+    FRAMES.forEach((f) => { f.taken = false; });
+    doorOpen = false; taken = 0; stamina = 1;
+    startTime = performance.now(); elapsed = 0;
+    $('mems').textContent = '0/4';
+    showMsg('FIND THE FOUR MEMORIES', 3.2);
+  }
+
+  // ---- messages / hud ----------------------------------------------------
+  function showMsg(text, dur) {
+    $('msg').textContent = text;
+    $('msg').classList.add('show');
+    msgT = dur;
+  }
+
+  // ---- audio (all procedural) ----------------------------------------------
+  let AC = null, droneGain = null, muted = false, noiseBuf = null, beatT = 0, knockT = 9;
+  function audio() {
+    if (AC) return;
+    try {
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      noiseBuf = AC.createBuffer(1, AC.sampleRate * 0.5, AC.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      // drone
+      droneGain = AC.createGain(); droneGain.gain.value = 0.045;
+      const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 150;
+      const o1 = AC.createOscillator(); o1.type = 'sawtooth'; o1.frequency.value = 47;
+      const o2 = AC.createOscillator(); o2.type = 'sawtooth'; o2.frequency.value = 47.6;
+      const lfo = AC.createOscillator(); lfo.frequency.value = 0.09;
+      const lfoG = AC.createGain(); lfoG.gain.value = 55;
+      lfo.connect(lfoG).connect(lp.frequency);
+      o1.connect(lp); o2.connect(lp); lp.connect(droneGain).connect(AC.destination);
+      o1.start(); o2.start(); lfo.start();
+    } catch (e) {}
+  }
+  function tone(freq, dur, type, vol, delay, glideTo) {
+    if (!AC || muted) return;
+    const t0 = AC.currentTime + (delay || 0);
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t0);
+    if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);
+    g.gain.setValueAtTime(vol, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g).connect(AC.destination);
+    o.start(t0); o.stop(t0 + dur);
+  }
+  function noise(dur, vol, freq, delay) {
+    if (!AC || muted) return;
+    const t0 = AC.currentTime + (delay || 0);
+    const src = AC.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+    const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 0.8;
+    const g = AC.createGain();
+    g.gain.setValueAtTime(vol, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(f).connect(g).connect(AC.destination);
+    src.start(t0); src.stop(t0 + dur);
+  }
+  const sndStep = () => noise(0.07, 0.10, 130 + Math.random() * 40);
+  const sndBeat = () => { tone(52, 0.1, 'sine', 0.22); tone(48, 0.12, 'sine', 0.18, 0.14); };
+  const sndTake = () => { tone(660, 0.3, 'triangle', 0.1); tone(990, 0.5, 'triangle', 0.08, 0.12); };
+  const sndOpen = () => { tone(70, 0.6, 'sine', 0.2); tone(300, 0.8, 'triangle', 0.08, 0.3, 600); };
+  const sndKnock = () => { tone(60, 0.18, 'sine', 0.14); tone(55, 0.16, 'sine', 0.1, 0.22); };
+  const sndScream = () => { tone(420, 0.75, 'sawtooth', 0.28, 0, 85); noise(0.7, 0.22, 900); tone(300, 0.75, 'square', 0.12, 0.03, 60); };
+
+  // ---- movement --------------------------------------------------------------
+  function cell(x, y) {
+    if (x < 0 || y < 0 || x >= N || y >= N) return 1;
+    return map[y | 0][x | 0];
+  }
+  function walkable(x, y) {
+    const c = cell(x, y);
+    if (c === 0) return true;
+    if (c === 5 && doorOpen) return true;
+    return false;
+  }
+  function tryMove(nx, ny) {
+    const r = 0.22;
+    if (walkable(nx - r, p.y - r) && walkable(nx + r, p.y - r) && walkable(nx - r, p.y + r) && walkable(nx + r, p.y + r)) p.x = nx;
+    if (walkable(p.x - r, ny - r) && walkable(p.x + r, ny - r) && walkable(p.x - r, ny + r) && walkable(p.x + r, ny + r)) p.y = ny;
+    if (doorOpen && (p.x | 0) === DOOR.x && (p.y | 0) === DOOR.y) win();
+  }
+
+  // ---- entity ------------------------------------------------------------------
+  function bfs(sx, sy, tx, ty) {
+    if (sx === tx && sy === ty) return [];
+    const prev = new Int16Array(N * N).fill(-1);
+    const q = [sy * N + sx];
+    prev[sy * N + sx] = sy * N + sx;
+    while (q.length) {
+      const cur = q.shift();
+      const cx = cur % N, cy = (cur / N) | 0;
+      if (cx === tx && cy === ty) {
+        const path = [];
+        let at = cur;
+        while (at !== sy * N + sx) { path.push({ x: (at % N) + 0.5, y: ((at / N) | 0) + 0.5 }); at = prev[at]; }
+        return path.reverse();
+      }
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = cx + dx, ny = cy + dy;
+        if (nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+        const idx = ny * N + nx;
+        if (prev[idx] !== -1 || map[ny][nx] !== 0) continue;
+        prev[idx] = cur;
+        q.push(idx);
+      }
+    }
+    return [];
+  }
+  function los(ax, ay, bx, by) {
+    const d = Math.hypot(bx - ax, by - ay);
+    const steps = Math.ceil(d / 0.15);
+    for (let i = 1; i < steps; i++) {
+      const t = i / steps;
+      if (cell(ax + (bx - ax) * t, ay + (by - ay) * t) !== 0) return false;
+    }
+    return true;
+  }
+  function entDist() { return Math.hypot(ent.x - p.x, ent.y - p.y); }
+
+  function randomFloor(minDist, maxDist) {
+    for (let tries = 0; tries < 200; tries++) {
+      const x = 1 + (Math.random() * (N - 2)) | 0;
+      const y = 1 + (Math.random() * (N - 2)) | 0;
+      if (map[y][x] !== 0) continue;
+      const d = Math.hypot(x + 0.5 - p.x, y + 0.5 - p.y);
+      if (d >= minDist && d <= maxDist) return { x, y };
+    }
+    return null;
+  }
+
+  function updateEntity(dt, now) {
+    if (SAFE) return;
+    const d = entDist();
+    const sees = d < 9 && los(ent.x, ent.y, p.x, p.y);
+    if (sees) ent.lastSeen = now;
+    if (ent.mode === 'patrol' && (d < 3 || (sees && d < 8))) {
+      ent.mode = 'chase';
+      showMsg('RUN.', 1.6);
+      tone(180, 0.5, 'sawtooth', 0.14, 0, 90);
+    }
+    if (ent.mode === 'chase' && now - ent.lastSeen > 7000 && d > 9) ent.mode = 'patrol';
+
+    // unseen far-away teleport: the house moves it
+    ent.tpTimer -= dt;
+    if (ent.mode === 'patrol' && ent.tpTimer <= 0) {
+      ent.tpTimer = 9 + Math.random() * 8;
+      if (d > 11 && !sees) {
+        const c = randomFloor(6, 10);
+        if (c) { ent.x = c.x + 0.5; ent.y = c.y + 0.5; ent.path = []; sndKnock(); }
+      }
+    }
+
+    ent.repath -= dt;
+    if (ent.repath <= 0) {
+      ent.repath = ent.mode === 'chase' ? 0.4 : 1.2;
+      let goal = null;
+      if (ent.mode === 'chase') goal = { x: p.x | 0, y: p.y | 0 };
+      else {
+        if (!ent.target || (Math.hypot(ent.target.x + 0.5 - ent.x, ent.target.y + 0.5 - ent.y) < 0.8)) ent.target = randomFloor(3, 22) || ent.target;
+        goal = ent.target;
+      }
+      if (goal) ent.path = bfs(ent.x | 0, ent.y | 0, goal.x, goal.y);
+    }
+
+    const speed = ent.mode === 'chase' ? 2.0 : 1.05;
+    if (ent.path.length) {
+      const nx = ent.path[0];
+      const dx = nx.x - ent.x, dy = nx.y - ent.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 0.1) ent.path.shift();
+      else { ent.x += (dx / dist) * speed * dt; ent.y += (dy / dist) * speed * dt; }
+    } else if (ent.mode === 'chase' && d > 0.01 && los(ent.x, ent.y, p.x, p.y)) {
+      ent.x += ((p.x - ent.x) / d) * speed * dt;
+      ent.y += ((p.y - ent.y) / d) * speed * dt;
+    }
+
+    if (d < 0.6) startDeath();
+  }
+
+  // ---- frames / door / win / death ---------------------------------------------
+  function nearFrame() {
+    for (let i = 0; i < 4; i++) {
+      const f = FRAMES[i];
+      if (f.taken) continue;
+      if (Math.hypot(f.x + 0.5 - p.x, f.y + 0.5 - p.y) < 1.7) return i;
+    }
+    return -1;
+  }
+  function collectFrame(i) {
+    const f = FRAMES[i];
+    if (!f || f.taken) return;
+    f.taken = true;
+    taken++;
+    $('mems').textContent = taken + '/4';
+    sndTake();
+    $('memImg').src = 'img/photo' + (i + 1) + '.jpg';
+    $('memCap').textContent = MEM_CAPTIONS[i] + '  —  ' + taken + ' OF 4';
+    $('memory').classList.add('show');
+    state = 'memory'; memT = 2.6;
+    if (taken === 4) {
+      doorOpen = true;
+      setTimeout(() => { sndOpen(); showMsg('THE BACK GATE IS OPEN. GO.', 4); }, 2400);
+    }
+  }
+  function texFor(code, x, y) {
+    if (code >= 6 && FRAMES[code - 6].taken) return tex[0];
+    return tex[code];
+  }
+
+  function startDeath() {
+    if (state !== 'play') return;
+    state = 'dying'; dieT = 0;
+    sndScream();
+    if (document.pointerLockElement) document.exitPointerLock();
+  }
+  function die() {
+    state = 'dead';
+    elapsed = (performance.now() - startTime) / 1000;
+    $('deadStats').innerHTML = 'It found you at <b style="color:#b91c1c">' + clockStr() + '</b> with ' +
+      taken + ' of 4 memories.' + (doorOpen ? ' The gate was open. You were so close.' : '');
+    $('dead').classList.add('show');
+  }
+  function win() {
+    if (state !== 'play') return;
+    state = 'won';
+    elapsed = (performance.now() - startTime) / 1000;
+    if (document.pointerLockElement) document.exitPointerLock();
+    let bestNote = '';
+    if (!best || elapsed < best) {
+      best = elapsed;
+      try { localStorage.setItem(STORE_KEY, String(best)); } catch (e) {}
+      bestNote = ' — a new best.';
+    }
+    $('wonStats').innerHTML = 'You escaped with all four memories in <b style="color:#d4af37">' +
+      fmtT(elapsed) + '</b>' + bestNote + (best ? '<br>Fastest escape: ' + fmtT(best) : '');
+    tone(523, 0.4, 'triangle', 0.1); tone(784, 0.6, 'triangle', 0.1, 0.2); tone(1047, 0.9, 'triangle', 0.1, 0.4);
+    $('won').classList.add('show');
+  }
+  function fmtT(s) { return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0'); }
+  function clockStr() {
+    // in-game clock creeps from 3:00 toward 3:59
+    const m = Math.min(59, Math.floor(((performance.now() - startTime) / 1000) / 3));
+    return '3:' + String(m).padStart(2, '0');
+  }
+
+  // ---- input --------------------------------------------------------------------
+  document.addEventListener('keydown', (e) => {
+    keys[e.key.toLowerCase()] = true;
+    if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase())) e.preventDefault();
+    if (e.key === 'm' || e.key === 'M') muted = !muted;
+    if ((e.key === 'e' || e.key === 'E') && state === 'play') { const i = nearFrame(); if (i >= 0) collectFrame(i); }
+    if ((e.key === 'p' || e.key === 'P')) {
+      if (state === 'play') { state = 'paused'; $('paused').classList.add('show'); }
+      else if (state === 'paused') { state = 'play'; $('paused').classList.remove('show'); last = performance.now(); }
+    }
+  });
+  document.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+
+  canvas.addEventListener('click', () => {
+    if (state === 'play' && !('ontouchstart' in window)) canvas.requestPointerLock?.();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (state === 'play' && document.pointerLockElement === canvas) p.a += e.movementX * 0.0021;
+  });
+
+  // touch: left half joystick, right half look
+  const touch = { moveId: -1, lookId: -1, mx: 0, my: 0, ox: 0, oy: 0, lx: 0 };
+  const isTouch = 'ontouchstart' in window;
+  if (isTouch) document.body.classList.add('touch');
+  canvas.addEventListener('touchstart', (e) => {
+    for (const t of e.changedTouches) {
+      const r = canvas.getBoundingClientRect();
+      if (t.clientX - r.left < r.width / 2 && touch.moveId === -1) {
+        touch.moveId = t.identifier; touch.ox = t.clientX; touch.oy = t.clientY; touch.mx = 0; touch.my = 0;
+      } else if (touch.lookId === -1) {
+        touch.lookId = t.identifier; touch.lx = t.clientX;
+      }
+    }
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchmove', (e) => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === touch.moveId) {
+        touch.mx = Math.max(-1, Math.min(1, (t.clientX - touch.ox) / 48));
+        touch.my = Math.max(-1, Math.min(1, (t.clientY - touch.oy) / 48));
+      } else if (t.identifier === touch.lookId) {
+        p.a += (t.clientX - touch.lx) * 0.006;
+        touch.lx = t.clientX;
+      }
+    }
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchend', (e) => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === touch.moveId) { touch.moveId = -1; touch.mx = 0; touch.my = 0; }
+      if (t.identifier === touch.lookId) touch.lookId = -1;
+    }
+  });
+  let sprintHold = false;
+  $('sprintBtn').addEventListener('touchstart', (e) => { sprintHold = true; e.preventDefault(); }, { passive: false });
+  $('sprintBtn').addEventListener('touchend', () => { sprintHold = false; });
+  $('collectBtn').addEventListener('click', () => { const i = nearFrame(); if (i >= 0) collectFrame(i); });
+
+  // ---- flow ------------------------------------------------------------------------
+  function begin() {
+    audio();
+    ['intro', 'dead', 'won'].forEach((id) => $(id).classList.remove('show'));
+    resetRun();
+    state = 'play';
+    last = performance.now();
+    if (!isTouch) canvas.requestPointerLock?.();
+  }
+  $('startBtn').addEventListener('click', begin);
+  $('retryBtn').addEventListener('click', begin);
+  $('againBtn').addEventListener('click', begin);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && state === 'play') { state = 'paused'; $('paused').classList.add('show'); }
+  });
+
+  // ---- update ----------------------------------------------------------------------
+  function update(dt, now) {
+    // look
+    if (keys['arrowleft'] || keys['q']) p.a -= 2.4 * dt;
+    if (keys['arrowright']) p.a += 2.4 * dt;
+
+    // move
+    let f = 0, s = 0;
+    if (keys['w'] || keys['arrowup']) f += 1;
+    if (keys['s'] || keys['arrowdown']) f -= 1;
+    if (keys['a']) s -= 1;
+    if (keys['d']) s += 1;
+    if (isTouch) { f += -touch.my; s += touch.mx; }
+    const mag = Math.hypot(f, s);
+    if (mag > 1) { f /= mag; s /= mag; }
+
+    sprinting = (keys['shift'] || sprintHold) && stamina > 0.12 && mag > 0;
+    if (sprinting) stamina = Math.max(0, stamina - dt / 3.2);
+    else stamina = Math.min(1, stamina + dt / 5.5);
+    $('stamFill').style.width = (stamina * 100) + '%';
+    $('stamBar').classList.toggle('low', stamina < 0.3);
+
+    const speed = sprinting ? 3.4 : 2.15;
+    const cos = Math.cos(p.a), sin = Math.sin(p.a);
+    if (mag > 0) {
+      tryMove(p.x + (cos * f - sin * s) * speed * dt, p.y + (sin * f + cos * s) * speed * dt);
+      stepAcc += speed * dt;
+      if (stepAcc > (sprinting ? 0.52 : 0.68)) { stepAcc = 0; sndStep(); }
+    }
+
+    updateEntity(dt, now);
+
+    // heartbeat + flicker with proximity
+    const d = entDist();
+    if (d < 8) {
+      beatT -= dt;
+      if (beatT <= 0) { beatT = 0.35 + d * 0.13; sndBeat(); }
+    }
+    flicker = 1;
+    if (d < 5) flicker = 0.72 + Math.random() * 0.28;
+    else if (Math.random() < 0.006) flicker = 0.8; // occasional lone flicker
+
+    // ambient knocks
+    knockT -= dt;
+    if (knockT <= 0) { knockT = 10 + Math.random() * 14; if (d > 8) sndKnock(); }
+
+    // prompt
+    const ni = nearFrame();
+    $('prompt').textContent = ni >= 0 ? (isTouch ? 'A MEMORY HANGS HERE' : 'E — TAKE THE MEMORY') : '';
+    $('prompt').classList.toggle('show', ni >= 0);
+    $('collectBtn').classList.toggle('show', ni >= 0);
+
+    // hud clock + message fade
+    $('clock').innerHTML = clockStr() + '<b>AM</b>';
+    if (msgT > 0) { msgT -= dt; if (msgT <= 0) $('msg').classList.remove('show'); }
+  }
+
+  // ---- render -------------------------------------------------------------------------
+  function render(now) {
+    // ceiling / floor
+    ctx.fillStyle = '#040406';
+    ctx.fillRect(0, 0, W, H / 2);
+    const fg = ctx.createLinearGradient(0, H / 2, 0, H);
+    fg.addColorStop(0, '#050507');
+    fg.addColorStop(1, '#101014');
+    ctx.fillStyle = fg;
+    ctx.fillRect(0, H / 2, W, H / 2);
+
+    const dirX = Math.cos(p.a), dirY = Math.sin(p.a);
+    const plX = -dirY * p.fov, plY = dirX * p.fov;
+
+    for (let x = 0; x < W; x++) {
+      const camX = 2 * x / W - 1;
+      const rx = dirX + plX * camX, ry = dirY + plY * camX;
+      let mx = p.x | 0, my = p.y | 0;
+      const ddx = Math.abs(1 / (rx || 1e-9)), ddy = Math.abs(1 / (ry || 1e-9));
+      let sx, sy, sdx, sdy;
+      if (rx < 0) { sx = -1; sdx = (p.x - mx) * ddx; } else { sx = 1; sdx = (mx + 1 - p.x) * ddx; }
+      if (ry < 0) { sy = -1; sdy = (p.y - my) * ddy; } else { sy = 1; sdy = (my + 1 - p.y) * ddy; }
+      let side = 0, code = 0, guard = 0;
+      while (guard++ < 64) {
+        if (sdx < sdy) { sdx += ddx; mx += sx; side = 0; } else { sdy += ddy; my += sy; side = 1; }
+        code = (mx < 0 || my < 0 || mx >= N || my >= N) ? 1 : map[my][mx];
+        if (code > 0) break;
+      }
+      const dist = side === 0 ? sdx - ddx : sdy - ddy;
+      zbuf[x] = dist;
+      const lineH = Math.min(H * 6, H / Math.max(dist, 0.01));
+      const y0 = H / 2 - lineH / 2;
+      let wallX = side === 0 ? p.y + dist * ry : p.x + dist * rx;
+      wallX -= wallX | 0;
+      const t = texFor(code, mx, my);
+      const txx = Math.min(255, (wallX * 256) | 0);
+      if (t && t.complete && t.naturalWidth) ctx.drawImage(t, txx, 0, 1, 256, x, y0, 1, lineH);
+      else { ctx.fillStyle = '#1a1a20'; ctx.fillRect(x, y0, 1, lineH); }
+
+      // light: flashlight cone + distance + side shading
+      const cone = 0.42 + 0.58 * Math.exp(-Math.pow((x - W / 2) / (W * 0.28), 2));
+      let light = flicker * cone / (1 + dist * dist * 0.075);
+      if (side === 1) light *= 0.78;
+      // memory frames glow softly; the open door glows gold
+      if (code >= 6 && !FRAMES[code - 6].taken) light = Math.min(1, light + 0.18 + 0.06 * Math.sin(now / 300));
+      if (code === 5 && doorOpen) light = Math.min(1, light + 0.22 + 0.1 * Math.sin(now / 200));
+      const shade = 1 - Math.max(0.02, Math.min(1, light));
+      if (shade > 0.02) {
+        ctx.fillStyle = 'rgba(0,0,0,' + shade.toFixed(3) + ')';
+        ctx.fillRect(x, y0 - 0.5, 1, lineH + 1);
+      }
+      if (code === 5 && doorOpen) {
+        ctx.fillStyle = 'rgba(212,175,55,0.12)';
+        ctx.fillRect(x, y0, 1, lineH);
+      }
+    }
+
+    // entity sprite (z-tested per column)
+    const exd = ent.x - p.x, eyd = ent.y - p.y;
+    const invDet = 1 / (plX * dirY - dirX * plY);
+    const trX = invDet * (dirY * exd - dirX * eyd);
+    const trY = invDet * (-plY * exd + plX * eyd);
+    if (trY > 0.15 && trY < 16) {
+      const sxc = ((W / 2) * (1 + trX / trY)) | 0;
+      const hgt = Math.abs((H / trY) * 1.5) | 0;
+      const wid = (hgt * 0.5) | 0;
+      const bottom = H / 2 + (H / trY) / 2;
+      const top = bottom - hgt;
+      const alpha = Math.max(0, Math.min(0.96, 1.35 - trY * 0.085)) * (0.75 + 0.25 * flicker);
+      ctx.globalAlpha = alpha;
+      for (let sxp = Math.max(0, sxc - wid / 2) | 0; sxp < Math.min(W, sxc + wid / 2); sxp++) {
+        if (zbuf[sxp] <= trY) continue;
+        const u = ((sxp - (sxc - wid / 2)) / wid) * 128;
+        ctx.drawImage(entCanvas, u, 0, 128 / wid, 256, sxp, top, 1, hgt);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // vignette
+    const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.32, W / 2, H / 2, H * 0.75);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, 'rgba(0,0,0,' + (0.55 + 0.2 * (1 - flicker)) + ')');
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function renderDying(dt) {
+    dieT += dt;
+    // static + the face
+    for (let i = 0; i < 500; i++) {
+      const v = (Math.random() * 110) | 0;
+      ctx.fillStyle = 'rgb(' + v + ',' + v + ',' + (v + 8) + ')';
+      ctx.fillRect(Math.random() * W, Math.random() * H, 3, 3);
+    }
+    const z = 1 + dieT * 2.2;
+    ctx.globalAlpha = Math.min(1, dieT * 3);
+    ctx.drawImage(entCanvas, W / 2 - (60 * z) / 2, H / 2 - (120 * z) / 2 - 10, 60 * z, 120 * z);
+    ctx.globalAlpha = 1;
+    if (dieT > 0.85) die();
+  }
+
+  // ---- loop ---------------------------------------------------------------------------
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.08);
+    last = now;
+    if (state === 'play') { update(dt, now); if (state === 'play' || state === 'memory') render(now); }
+    else if (state === 'memory') {
+      memT -= dt;
+      render(now);
+      if (memT <= 0) { $('memory').classList.remove('show'); state = 'play'; }
+    }
+    else if (state === 'dying') renderDying(dt);
+    else if (state === 'intro' && texReady >= texTotal) render(now); // ambient backdrop
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  $('memory').addEventListener('click', () => { if (state === 'memory') { memT = 0; } });
+
+  // ---- debug hooks ------------------------------------------------------------------------
+  if (DEBUG) {
+    window.__V = {
+      p, ent, map, FRAMES,
+      state: () => state,
+      doorOpen: () => doorOpen,
+      taken: () => taken,
+      collect: (i) => collectFrame(i),
+      tp: (x, y) => { p.x = x; p.y = y; },
+      tpe: (x, y) => { ent.x = x; ent.y = y; ent.path = []; },
+      begin,
+    };
+  }
+})();
+</script>
+</body>
+</html>

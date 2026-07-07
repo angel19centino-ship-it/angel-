@@ -35,6 +35,18 @@ or touch; best score is remembered locally.
 
 **Play at → https://angel19centino-ship-it.github.io/angel-/sweep/**
 
+## VIGIL® — 3:00 AM
+
+The horror sequel to SWEEP®: `vigil/` is a first-person 3D game built
+on a zero-dependency raycasting engine. Walk the house at 3 AM by
+flashlight — the walls are textured with crops from the real photos
+(the wood paneling, the stone fireplace, the hedge, the stucco). Find
+the four framed memories to open the back gate, and don't let the
+thing that lives there catch you. WASD + mouse (or touch) to move,
+E to take a memory, SHIFT to run. Headphones recommended.
+
+**Play at → https://angel19centino-ship-it.github.io/angel-/vigil/**
+
 ## Customize
 
 Everything to change is marked with a `CUSTOMIZE ME` comment at the top of `index.html`:
