@@ -29,6 +29,7 @@ jobs:
           cp index.html /tmp/site/
           cp -r supremacy /tmp/site/
           cp -r snake /tmp/site/
+          cp -r sweep /tmp/site/
           touch /tmp/site/.nojekyll
           cd /tmp/site
           git init -b gh-pages
