@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0a0a0f">
+<title>HEARTH® — walk your home</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: #0a0a0f;
+    color: #e5e7eb;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; padding: 10px; overflow: hidden;
+    user-select: none; -webkit-user-select: none;
+  }
+  .frame {
+    position: relative;
+    width: min(96vw, calc((100dvh - 70px) * 16 / 10), 1100px);
+    aspect-ratio: 16 / 10;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; overflow: hidden; background: #000;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.7);
+  }
+  canvas#view {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    image-rendering: pixelated; cursor: grab; touch-action: none;
+  }
+  canvas#view:active { cursor: grabbing; }
+
+  .hud { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+  .hud .top {
+    position: absolute; top: 10px; left: 14px; right: 14px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    font-size: clamp(10px, 1.6vmin, 13px); letter-spacing: 0.22em;
+    color: rgba(255,255,255,0.85); text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  }
+  .hud .top .brand b { color: #d4af37; }
+  #minimap { position: absolute; top: 8px; right: 12px; opacity: 0.9; }
+  .hud .room {
+    position: absolute; top: 14%; left: 0; right: 0; text-align: center;
+    font-size: clamp(15px, 3vmin, 26px); font-weight: 800; letter-spacing: 0.32em;
+    color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+    opacity: 0; transition: opacity 0.5s;
+  }
+  .hud .room.show { opacity: 1; }
+  .hud .hint {
+    position: absolute; bottom: 12px; left: 0; right: 0; text-align: center;
+    font-size: clamp(9px, 1.5vmin, 12px); letter-spacing: 0.24em;
+    color: rgba(255,255,255,0.55); text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  }
+  .hud .dot {
+    position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; border-radius: 50%;
+    background: rgba(255,255,255,0.35); transform: translate(-50%, -50%);
+  }
+
+  .tbtn {
+    position: absolute; z-index: 6; display: none;
+    border: 1px solid rgba(255,255,255,0.25); background: rgba(10,10,15,0.4);
+    color: #e5e7eb; border-radius: 50%; align-items: center; justify-content: center;
+    font-size: 11px; letter-spacing: 0.1em; -webkit-tap-highlight-color: transparent;
+  }
+  body.touch .tbtn { display: flex; }
+  #runBtn { right: 18px; bottom: 60px; width: 62px; height: 62px; }
+
+  .overlay {
+    position: absolute; inset: 0; z-index: 20; display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; text-align: center; padding: 26px;
+    background: rgba(10,10,15,0.82); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  }
+  .overlay.show { display: flex; }
+  .overlay .big { font-size: clamp(24px, 6vmin, 44px); font-weight: 800; letter-spacing: 0.3em; color: #f8fafc; }
+  .overlay .gold { color: #d4af37; }
+  .overlay p { font-size: clamp(11px, 1.9vmin, 14px); letter-spacing: 0.12em; line-height: 2; color: #9ca3af; max-width: 44em; }
+  .overlay p b { color: #e5e7eb; }
+  .overlay .btn {
+    background: #d4af37; color: #0a0a0f; border: none; border-radius: 8px;
+    font-weight: 800; letter-spacing: 0.24em; font-size: clamp(12px, 2vmin, 15px);
+    padding: 13px 36px; cursor: pointer;
+  }
+  .overlay .btn:hover { background: #e9c95c; }
+
+  footer { font-size: 10px; letter-spacing: 0.2em; color: #4b5563; text-align: center; }
+  footer a { color: #6b7280; text-decoration: none; }
+  footer a:hover { color: #d4af37; }
+</style>
+</head>
+<body>
+
+<div class="frame" id="frame">
+  <canvas id="view" width="360" height="225"></canvas>
+  <div class="hud">
+    <div class="top">
+      <span class="brand">HEARTH<b>&reg;</b></span>
+      <canvas id="minimap" width="118" height="118"></canvas>
+    </div>
+    <div class="room" id="roomName"></div>
+    <div class="dot"></div>
+    <div class="hint" id="hint">WASD move &middot; drag / arrows look &middot; SHIFT run</div>
+  </div>
+  <button class="tbtn" id="runBtn">RUN</button>
+
+  <div class="overlay show" id="intro">
+    <div class="big">HEARTH<span class="gold">&reg;</span></div>
+    <p>Step inside your own house and walk around.<br>
+       Four rooms, four real photographs on the walls &mdash; the dining room,
+       the living room, the game room, and the backyard &mdash; all connected by doorways.</p>
+    <p><b>WASD</b> or arrows to move &middot; <b>drag</b> the view (or mouse after clicking) to look &middot; <b>SHIFT</b> to jog<br>
+       on phones: left thumb walks, right thumb looks around</p>
+    <button class="btn" id="startBtn">STEP INSIDE</button>
+  </div>
+</div>
+
+<footer><a href="../">&larr; ANGEL&reg;</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="../snake/">SERAPH&reg;</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="../sweep/">SWEEP&reg;</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="../vigil/">VIGIL&reg;</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;WELCOME HOME.</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---- map: a 2x2 house. Each room's outer wall is its photo mural. --------
+  // codes: 0 floor, 1 wood, 2 stone, 3 stucco, 4 hedge,
+  //        10 dining mural, 11 living mural, 12 game-room mural, 13 backyard mural
+  const N = 19;
+  const map = Array.from({ length: N }, () => new Array(N).fill(0));
+  for (let i = 0; i < N; i++) { map[0][i] = 1; map[N - 1][i] = 1; map[i][0] = 1; map[i][N - 1] = 1; }
+  for (let i = 0; i < N; i++) { map[9][i] = 1; map[i][9] = 1; }           // dividers
+  // doorways (carve back to floor)
+  map[4][9] = 0; map[5][9] = 0;      // dining <-> living
+  map[13][9] = 0; map[14][9] = 0;    // game room <-> backyard
+  map[9][4] = 0; map[9][5] = 0;      // dining <-> game room
+  map[9][13] = 0; map[9][14] = 0;    // living <-> backyard
+  // murals on the outer walls
+  for (let x = 1; x <= 8; x++) { map[0][x] = 10; map[N - 1][x] = 12; }
+  for (let x = 10; x <= 17; x++) { map[0][x] = 11; map[N - 1][x] = 13; }
+  // material per wall by quadrant (non-mural walls)
+  function baseMat(mx, my) {
+    const right = mx > 9, bottom = my > 9;
+    if (!bottom && !right) return 1; // dining: wood
+    if (!bottom && right) return 2;  // living: stone
+    if (bottom && !right) return 1;  // game room: wood
+    return 3;                         // backyard: stucco
+  }
+
+  // mural x-spans (all murals are horizontal walls; u maps across world x)
+  const MURAL = {
+    10: { x0: 1, x1: 9, tex: 'dining' },
+    11: { x0: 10, x1: 18, tex: 'living' },
+    12: { x0: 1, x1: 9, tex: 'den' },
+    13: { x0: 10, x1: 18, tex: 'yard' },
+  };
+  const ROOMS = [
+    { name: 'THE DINING ROOM', cx: 4.5, cy: 4.5, q: [false, false] },
+    { name: 'THE LIVING ROOM', cx: 14.5, cy: 4.5, q: [false, true] },
+    { name: 'THE GAME ROOM', cx: 4.5, cy: 14.5, q: [true, false] },
+    { name: 'THE BACKYARD', cx: 14.5, cy: 14.5, q: [true, true] },
+  ];
+  function roomAt(x, y) {
+    const right = x > 9.5, bottom = y > 9.5;
+    return (bottom ? 2 : 0) + (right ? 1 : 0);
+  }
+
+  const DEBUG = new URLSearchParams(location.search).has('debug');
+
+  // ---- textures -------------------------------------------------------------
+  const TEXFILES = {
+    1: 'img/wood.jpg', 2: 'img/stone.jpg', 3: 'img/stucco.jpg', 4: 'img/hedge.jpg',
+    dining: 'img/mural_dining.jpg', living: 'img/mural_living.jpg',
+    den: 'img/mural_den.jpg', yard: 'img/mural_yard.jpg', floor: 'img/floor.jpg',
+  };
+  const tex = {}; let texReady = 0; const texTotal = Object.keys(TEXFILES).length;
+  for (const k in TEXFILES) { const im = new Image(); im.src = TEXFILES[k]; im.onload = () => texReady++; tex[k] = im; }
+
+  // ---- state ----------------------------------------------------------------
+  const canvas = document.getElementById('view'), ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const zbuf = new Float32Array(W);
+  const p = { x: 4.5, y: 6.6, a: -Math.PI / 2, fov: 0.66 }; // start in dining, facing its photo
+  let state = 'intro', curRoom = -1, roomT = 0, bob = 0, stepAcc = 0;
+  const $ = (id) => document.getElementById(id);
+  const keys = {};
+
+  // ---- audio: gentle footsteps only ----------------------------------------
+  let AC = null, muted = false, noiseBuf = null;
+  function audio() {
+    if (AC) return;
+    try {
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      noiseBuf = AC.createBuffer(1, AC.sampleRate * 0.4, AC.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    } catch (e) {}
+  }
+  function step() {
+    if (!AC || muted) return;
+    const t0 = AC.currentTime;
+    const s = AC.createBufferSource(); s.buffer = noiseBuf;
+    const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 340;
+    const g = AC.createGain(); g.gain.setValueAtTime(0.06, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.09);
+    s.connect(f).connect(g).connect(AC.destination); s.start(t0); s.stop(t0 + 0.1);
+  }
+  function chime() {
+    if (!AC || muted) return;
+    [523, 784].forEach((fr, i) => {
+      const o = AC.createOscillator(), g = AC.createGain();
+      o.type = 'triangle'; o.frequency.value = fr;
+      const t0 = AC.currentTime + i * 0.09;
+      g.gain.setValueAtTime(0.05, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.4);
+      o.connect(g).connect(AC.destination); o.start(t0); o.stop(t0 + 0.4);
+    });
+  }
+
+  // ---- movement -------------------------------------------------------------
+  function walkable(x, y) { const c = (x < 0 || y < 0 || x >= N || y >= N) ? 1 : map[y | 0][x | 0]; return c === 0; }
+  function tryMove(nx, ny) {
+    const r = 0.22;
+    if (walkable(nx - r, p.y - r) && walkable(nx + r, p.y - r) && walkable(nx - r, p.y + r) && walkable(nx + r, p.y + r)) p.x = nx;
+    if (walkable(p.x - r, ny - r) && walkable(p.x + r, ny - r) && walkable(p.x - r, ny + r) && walkable(p.x + r, ny + r)) p.y = ny;
+  }
+
+  // ---- input ----------------------------------------------------------------
+  document.addEventListener('keydown', (e) => {
+    keys[e.key.toLowerCase()] = true;
+    if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase())) e.preventDefault();
+    if (e.key === 'm' || e.key === 'M') muted = !muted;
+  });
+  document.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+
+  // mouse: click to pointer-lock (desktop), or drag to look
+  let dragging = false, lastMX = 0;
+  canvas.addEventListener('mousedown', (e) => { dragging = true; lastMX = e.clientX; });
+  window.addEventListener('mouseup', () => { dragging = false; });
+  window.addEventListener('mousemove', (e) => {
+    if (state !== 'play') return;
+    if (document.pointerLockElement === canvas) p.a += e.movementX * 0.0022;
+    else if (dragging) { p.a += (e.clientX - lastMX) * 0.006; lastMX = e.clientX; }
+  });
+  canvas.addEventListener('dblclick', () => { if (state === 'play') canvas.requestPointerLock?.(); });
+
+  // touch: left half walks, right half looks
+  const isTouch = 'ontouchstart' in window;
+  if (isTouch) document.body.classList.add('touch');
+  const T = { mId: -1, lId: -1, mx: 0, my: 0, ox: 0, oy: 0, lx: 0 };
+  canvas.addEventListener('touchstart', (e) => {
+    for (const t of e.changedTouches) {
+      const r = canvas.getBoundingClientRect();
+      if (t.clientX - r.left < r.width / 2 && T.mId === -1) { T.mId = t.identifier; T.ox = t.clientX; T.oy = t.clientY; T.mx = 0; T.my = 0; }
+      else if (T.lId === -1) { T.lId = t.identifier; T.lx = t.clientX; }
+    }
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchmove', (e) => {
+    for (const t of e.changedTouches) {
+      if (t.identifier === T.mId) { T.mx = Math.max(-1, Math.min(1, (t.clientX - T.ox) / 46)); T.my = Math.max(-1, Math.min(1, (t.clientY - T.oy) / 46)); }
+      else if (t.identifier === T.lId) { p.a += (t.clientX - T.lx) * 0.006; T.lx = t.clientX; }
+    }
+    e.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchend', (e) => {
+    for (const t of e.changedTouches) { if (t.identifier === T.mId) { T.mId = -1; T.mx = 0; T.my = 0; } if (t.identifier === T.lId) T.lId = -1; }
+  });
+  let runHold = false;
+  $('runBtn').addEventListener('touchstart', (e) => { runHold = true; e.preventDefault(); }, { passive: false });
+  $('runBtn').addEventListener('touchend', () => { runHold = false; });
+
+  function begin() { audio(); $('intro').classList.remove('show'); state = 'play'; last = performance.now(); if (!isTouch) canvas.requestPointerLock?.(); }
+  $('startBtn').addEventListener('click', begin);
+
+  // ---- update ---------------------------------------------------------------
+  function update(dt) {
+    if (keys['arrowleft']) p.a -= 2.3 * dt;
+    if (keys['arrowright']) p.a += 2.3 * dt;
+    let f = 0, s = 0;
+    if (keys['w']) f += 1;
+    if (keys['s']) f -= 1;
+    if (keys['a']) s -= 1;
+    if (keys['d']) s += 1;
+    if (keys['arrowup']) f += 1;
+    if (keys['arrowdown']) f -= 1;
+    if (isTouch) { f += -T.my; s += T.mx; }
+    const mag = Math.hypot(f, s); if (mag > 1) { f /= mag; s /= mag; }
+    const running = (keys['shift'] || runHold) && mag > 0;
+    const speed = running ? 3.1 : 1.9;
+    const cos = Math.cos(p.a), sin = Math.sin(p.a);
+    if (mag > 0) {
+      tryMove(p.x + (cos * f - sin * s) * speed * dt, p.y + (sin * f + cos * s) * speed * dt);
+      bob += speed * dt * 3;
+      stepAcc += speed * dt;
+      if (stepAcc > (running ? 0.5 : 0.66)) { stepAcc = 0; step(); }
+    }
+    const r = roomAt(p.x, p.y);
+    if (r !== curRoom) { curRoom = r; $('roomName').textContent = ROOMS[r].name; $('roomName').classList.add('show'); roomT = 2.2; chime(); }
+    if (roomT > 0) { roomT -= dt; if (roomT <= 0) $('roomName').classList.remove('show'); }
+  }
+
+  // ---- render ---------------------------------------------------------------
+  function render(now) {
+    const bobY = Math.sin(bob) * 1.6;
+    // ceiling (warm white) and floor (soft gradient)
+    const cg = ctx.createLinearGradient(0, 0, 0, H / 2);
+    cg.addColorStop(0, '#e9e4d8'); cg.addColorStop(1, '#b9b2a4');
+    ctx.fillStyle = cg; ctx.fillRect(0, 0, W, H / 2 + bobY);
+    const fgd = ctx.createLinearGradient(0, H / 2, 0, H);
+    fgd.addColorStop(0, '#8b8578'); fgd.addColorStop(1, '#4c4a44');
+    ctx.fillStyle = fgd; ctx.fillRect(0, H / 2 + bobY, W, H / 2);
+
+    const dirX = Math.cos(p.a), dirY = Math.sin(p.a);
+    const plX = -dirY * p.fov, plY = dirX * p.fov;
+
+    for (let x = 0; x < W; x++) {
+      const camX = 2 * x / W - 1;
+      const rx = dirX + plX * camX, ry = dirY + plY * camX;
+      let mx = p.x | 0, my = p.y | 0;
+      const ddx = Math.abs(1 / (rx || 1e-9)), ddy = Math.abs(1 / (ry || 1e-9));
+      let sx, sy, sdx, sdy;
+      if (rx < 0) { sx = -1; sdx = (p.x - mx) * ddx; } else { sx = 1; sdx = (mx + 1 - p.x) * ddx; }
+      if (ry < 0) { sy = -1; sdy = (p.y - my) * ddy; } else { sy = 1; sdy = (my + 1 - p.y) * ddy; }
+      let side = 0, code = 0, guard = 0;
+      while (guard++ < 80) {
+        if (sdx < sdy) { sdx += ddx; mx += sx; side = 0; } else { sdy += ddy; my += sy; side = 1; }
+        code = (mx < 0 || my < 0 || mx >= N || my >= N) ? 1 : map[my][mx];
+        if (code > 0) break;
+      }
+      const dist = side === 0 ? sdx - ddx : sdy - ddy;
+      zbuf[x] = dist;
+      const lineH = Math.min(H * 6, H / Math.max(dist, 0.01));
+      const y0 = H / 2 - lineH / 2 + bobY;
+
+      let t, u;
+      if (code >= 10) {
+        const m = MURAL[code];
+        const gx = p.x + dist * rx;                 // world x along the mural
+        u = Math.max(0, Math.min(1, (gx - m.x0) / (m.x1 - m.x0)));
+        t = tex[m.tex];
+      } else {
+        const wallX = side === 0 ? p.y + dist * ry : p.x + dist * rx;
+        u = wallX - (wallX | 0);
+        t = tex[baseMat(mx, my)] || tex[1];
+      }
+      if (t && t.complete && t.naturalWidth) {
+        const sw = t.naturalWidth;
+        ctx.drawImage(t, Math.min(sw - 1, u * sw) | 0, 0, 1, t.naturalHeight, x, y0, 1, lineH);
+      } else { ctx.fillStyle = '#5a544a'; ctx.fillRect(x, y0, 1, lineH); }
+
+      // bright, even daylight: soft distance falloff + gentle side shading
+      let light = 1.05 / (1 + dist * dist * 0.020);
+      if (side === 1) light *= 0.88;
+      if (code >= 10) light = Math.min(1.12, light + 0.15); // let the photos shine
+      const shade = 1 - Math.max(0.55, Math.min(1, light));
+      if (shade > 0.01) { ctx.fillStyle = 'rgba(20,16,10,' + shade.toFixed(3) + ')'; ctx.fillRect(x, y0 - 0.5, 1, lineH + 1); }
+    }
+
+    // very soft warm vignette
+    const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.42, W / 2, H / 2, H * 0.8);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(10,8,4,0.28)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+
+    drawMinimap();
+  }
+
+  // ---- minimap --------------------------------------------------------------
+  const mm = document.getElementById('minimap'), mmx = mm.getContext('2d');
+  function drawMinimap() {
+    const S = mm.width / N;
+    mmx.clearRect(0, 0, mm.width, mm.height);
+    mmx.fillStyle = 'rgba(10,10,15,0.55)'; mmx.fillRect(0, 0, mm.width, mm.height);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const c = map[y][x];
+      if (c === 0) continue;
+      mmx.fillStyle = c >= 10 ? 'rgba(212,175,55,0.9)' : 'rgba(180,170,150,0.5)';
+      mmx.fillRect(x * S, y * S, S + 0.5, S + 0.5);
+    }
+    // player
+    mmx.fillStyle = '#7dd3a0';
+    mmx.beginPath(); mmx.arc(p.x * S, p.y * S, 2.4, 0, Math.PI * 2); mmx.fill();
+    mmx.strokeStyle = '#7dd3a0'; mmx.lineWidth = 1;
+    mmx.beginPath(); mmx.moveTo(p.x * S, p.y * S); mmx.lineTo((p.x + Math.cos(p.a) * 1.4) * S, (p.y + Math.sin(p.a) * 1.4) * S); mmx.stroke();
+  }
+
+  // ---- loop -----------------------------------------------------------------
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    if (state === 'play') { update(dt); render(now); }
+    else if (state === 'intro' && texReady >= texTotal) render(now); // live backdrop behind the menu
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  if (DEBUG) window.__H = { p, map, N, roomAt, state: () => state, begin, tp: (x, y, a) => { p.x = x; p.y = y; if (a !== undefined) p.a = a; } };
+})();
+</script>
+</body>
+</html>

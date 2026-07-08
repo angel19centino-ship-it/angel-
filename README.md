@@ -47,6 +47,18 @@ E to take a memory, SHIFT to run. Headphones recommended.
 
 **Play at → https://angel19centino-ship-it.github.io/angel-/vigil/**
 
+## HEARTH® — walk your home
+
+`hearth/` is a bright, peaceful first-person 3D walkthrough of the house
+— the calm counterpart to VIGIL®. Built on the same zero-dependency
+raycasting engine, but each of the four rooms has its **real photograph
+mounted on the far wall**, so you literally walk from inside the picture:
+the dining room, living room, game room, and backyard, all connected by
+doorways, with a live minimap. No monster, no timer — just explore.
+WASD + drag-to-look (or touch), SHIFT to jog.
+
+**Walk in at → https://angel19centino-ship-it.github.io/angel-/hearth/**
+
 ## Customize
 
 Everything to change is marked with a `CUSTOMIZE ME` comment at the top of `index.html`:
